@@ -1,6 +1,6 @@
-package org.example;
+package org.example.model;
 
-public class CartaCriatura extends Carta{
+public class CartaCriatura extends Carta {
     private Posicao posicao;
     private int turnoEntrada;
 

@@ -1,6 +1,6 @@
-package org.example;
+package org.example.model;
 
-public class Pocao extends CartaEspecial{
+public class Pocao extends CartaEspecial {
     private int cura;
 
     public Pocao(String nome, Raridade raridade, int cura){

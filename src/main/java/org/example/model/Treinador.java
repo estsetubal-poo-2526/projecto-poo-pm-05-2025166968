@@ -1,6 +1,6 @@
-package org.example;
+package org.example.model;
 
-public class Treinador extends CartaEspecial{
+public class Treinador extends CartaEspecial {
     private int buffAtk;
     private int buffDef;
 

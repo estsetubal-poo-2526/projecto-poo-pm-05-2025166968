@@ -1,4 +1,4 @@
-package org.example;
+package org.example.model;
 
 public abstract class Carta {
     protected String nome;
