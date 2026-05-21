@@ -31,7 +31,8 @@ public class Lobby {
 
         javafx.scene.control.Button btnJogar = new javafx.scene.control.Button("Iniciar Jogo");
         btnJogar.setOnAction(e -> {
-            System.out.println("Iniciar Jogo");
+            SalaJogo salaJogo = new SalaJogo(stage);
+            salaJogo.mostrar();
         });
 
         VBox layout = new VBox(20);
