@@ -6,6 +6,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.example.controller.JogoController;
 
 public class Lobby {
     private Stage stage;
@@ -31,8 +32,8 @@ public class Lobby {
 
         javafx.scene.control.Button btnJogar = new javafx.scene.control.Button("Iniciar Jogo");
         btnJogar.setOnAction(e -> {
-            SalaJogo salaJogo = new SalaJogo(stage);
-            salaJogo.mostrar();
+            JogoController controller = new JogoController(stage);
+            controller.iniciarJogo();
         });
 
         VBox layout = new VBox(20);

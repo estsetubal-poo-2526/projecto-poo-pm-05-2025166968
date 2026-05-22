@@ -8,12 +8,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.example.controller.JogoController;
+import org.example.model.Carta;
+import java.util.List;
+
+import java.util.List;
 
 public class SalaJogo {
     private Stage stage;
+    private JogoController controller;
 
-    public SalaJogo(Stage stage){
+    public SalaJogo(Stage stage, JogoController controller){
         this.stage = stage;
+        this.controller = controller;
     }
 
     public void mostrar(){
@@ -41,14 +48,15 @@ public class SalaJogo {
         txtMao.setFont(Font.font(14));
         HBox mao = new HBox(10);
         mao.setAlignment(Pos.CENTER);
-        for (int i = 0; i < 3; i++){
-            Button carta = new Button("Carta " + (i + 1));
-            carta.setPrefSize(100, 140);
-            mao.getChildren().add(carta);
+        List<Carta> cartasMao = controller.getJogo().getJogador(0).getMao();
+        for (Carta carta : cartasMao){
+            Button btnCarta = new Button(carta.getNome() + "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() + "\nDEF:" + carta.getDef());
+            btnCarta.setPrefSize(100, 140);
+            mao.getChildren().add(btnCarta);
         }
 
-        Button btnPassarTurno = new Button("Passar Truno");
-        Button btnDesistir = new Button("Desistitir");
+        Button btnPassarTurno = new Button("Passar Turno");
+        Button btnDesistir = new Button("Desistir");
         btnDesistir.setOnAction(e -> {
             Lobby lobby = new Lobby(stage);
             lobby.mostrar();

@@ -92,6 +92,10 @@ public class Jogador {
         return moedas;
     }
 
+    public void setBaralho(Baralho baralho){
+        this.baralho = baralho;
+    }
+
     @Override
     public String toString(){
         return nome + " | Mâo: " + mao.size() + " cartas | Moedas: " + moedas;
