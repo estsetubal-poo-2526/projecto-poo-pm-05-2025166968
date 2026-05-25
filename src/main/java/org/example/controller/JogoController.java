@@ -1,7 +1,5 @@
 package org.example.controller;
-import org.example.model.GeradorCartas;
-import org.example.model.Jogo;
-import org.example.model.Jogador;
+import org.example.model.*;
 import org.example.view.SalaJogo;
 import org.example.view.Lobby;
 import javafx.stage.Stage;
@@ -27,6 +25,45 @@ public class JogoController {
         jogo.proximoTurno();
         if (jogo.isJogoTerminado()){
             terminarJogo();
+        }
+    }
+
+    public void atacar(int indexAtacante, int indexAlvo){
+        CartaCriatura atacante = jogo.getJogador(0).getCampo().getEspacosCriatura()[indexAtacante];
+        CartaCriatura alvo = jogo.getJogador(1).getCampo().getEspacosCriatura()[indexAlvo];
+
+        if (atacante == null || alvo == null){
+            return;
+        }
+
+        if (!atacante.podeAtacar(jogo.getJogador(0).getCampo().getTurnoAtual())){
+            return;
+        }
+
+        double fator = calcularFatorElemento(atacante.getElemento(), alvo.getElemento());
+        int dano = (int)(atacante.getAtk() * fator);
+        alvo.receberDano(dano);
+
+        if (!alvo.estaViva()){
+            jogo.getJogador(1).getCampo().removerCriatura(indexAlvo);
+        }
+
+        verificarFimJogo();
+    }
+
+    private double calcularFatorElemento(Elemento atacante, Elemento alvo){
+        if (temVantagem(atacante, alvo)){
+            return 1.5;
+        }
+        if (temVamtagem(alvo, atacante)){
+            return 0.7;
+        }
+        return 1.0;
+    }
+
+    private boolean temVantagem(Elemento atacante, Elemento alvo){
+        return switch(atacante){
+            case Fogo -> alvo == Elemento.Erva || alvo == Elemento.Gelo;
         }
     }
 

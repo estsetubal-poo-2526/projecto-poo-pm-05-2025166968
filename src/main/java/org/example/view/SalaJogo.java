@@ -30,10 +30,17 @@ public class SalaJogo {
         txtAdversario.setFont(Font.font(18));
         HBox campoAdversario = new HBox(10);
         campoAdversario.setAlignment(Pos.CENTER);
+        CartaCriatura[] espacosPC = controller.getJogo().getJogador(1).getCampo().getEspacosCriatura();
         for (int i = 0; i < 5; i++){
-            Button espaco = new Button("[ ]");
-            espaco.setPrefSize(100, 140);
-            campoAdversario.getChildren().add(espaco);
+            if (espacosPC[i] != null){
+                Button espaco = new Button(espacosPC[i].getNome() + "\nHP:" + espacosPC[i].getHp() + "\nATK:" + espacosPC[i].getAtk() + "\nDEF:" + espacosPC[i].getDef());
+                espaco.setPrefSize(100, 140);
+                campoAdversario.getChildren().add(espaco);
+            } else {
+                Button espaco = new Button("[ ]");
+                espaco.setPrefSize(100, 140);
+                campoAdversario.getChildren().add(espaco);
+            }
         }
 
         Text txtJogador = new Text("O Teu Campo");
