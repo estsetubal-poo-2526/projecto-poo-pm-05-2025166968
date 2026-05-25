@@ -61,7 +61,7 @@ public class Campo {
         if (index >= 0 && index < 2) espacosEspecial[index] = null;
     }
 
-    public CartaCriatura[] getEspeacosCriatura(){
+    public CartaCriatura[] getEspacosCriatura(){
         return espacosCriatura;
     }
 

@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import org.example.controller.JogoController;
 import org.example.model.Carta;
 import java.util.List;
+import org.example.model.Campo;
+import org.example.model.CartaCriatura;
 
 import java.util.List;
 
@@ -38,10 +40,17 @@ public class SalaJogo {
         txtJogador.setFont(Font.font(18));
         HBox campoJogador = new HBox(10);
         campoJogador.setAlignment(Pos.CENTER);
+        CartaCriatura[] espacos = controller.getJogo().getJogador(0).getCampo().getEspacosCriatura();
         for (int i = 0; i < 5; i++){
-            Button espaco = new Button("[ ]");
-            espaco.setPrefSize(100, 140);
-            campoJogador.getChildren().add(espaco);
+            if (espacos[i] != null){
+                Button espaco = new Button(espacos[i].getNome() + "\nHP:" + espacos[i].getHp() + "\nATK:" + espacos[i].getAtk() + "\nDEF:" + espacos[i].getDef());
+                espaco.setPrefSize(100, 140);
+                campoJogador.getChildren().add(espaco);
+            } else {
+                Button espaco = new Button("[ ]");
+                espaco.setPrefSize(100, 140);
+                campoJogador.getChildren().add(espaco);
+            }
         }
 
         Text txtMao = new Text("Mão");
@@ -49,9 +58,22 @@ public class SalaJogo {
         HBox mao = new HBox(10);
         mao.setAlignment(Pos.CENTER);
         List<Carta> cartasMao = controller.getJogo().getJogador(0).getMao();
-        for (Carta carta : cartasMao){
+        for (int i = 0; i < cartasMao.size(); i++){
+            Carta carta = cartasMao.get(i);
+            final int indexMao = i;
             Button btnCarta = new Button(carta.getNome() + "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() + "\nDEF:" + carta.getDef());
+
             btnCarta.setPrefSize(100, 140);
+            btnCarta.setOnAction(e ->{
+                Campo campo = controller.getJogo().getJogador(0).getCampo();
+                for (int j = 0; j < 5; j++){
+                    if (campo.getEspacosCriatura()[j] == null){
+                        controller.getJogo().getJogador(0).jogarCriatura(indexMao, j);
+                        atualizar();
+                        break;
+                    }
+                }
+            });
             mao.getChildren().add(btnCarta);
         }
 
@@ -73,5 +95,9 @@ public class SalaJogo {
         Scene scene = new Scene(layout, 1280, 720);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void atualizar(){
+        mostrar();
     }
 }
