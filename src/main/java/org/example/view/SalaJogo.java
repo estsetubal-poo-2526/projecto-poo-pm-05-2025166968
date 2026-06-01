@@ -19,6 +19,7 @@ import java.util.List;
 public class SalaJogo {
     private Stage stage;
     private JogoController controller;
+    private int cartaSelecionada = -1;
 
     public SalaJogo(Stage stage, JogoController controller){
         this.stage = stage;
@@ -32,9 +33,17 @@ public class SalaJogo {
         campoAdversario.setAlignment(Pos.CENTER);
         CartaCriatura[] espacosPC = controller.getJogo().getJogador(1).getCampo().getEspacosCriatura();
         for (int i = 0; i < 5; i++){
+            final int indexAlvo = i;
             if (espacosPC[i] != null){
                 Button espaco = new Button(espacosPC[i].getNome() + "\nHP:" + espacosPC[i].getHp() + "\nATK:" + espacosPC[i].getAtk() + "\nDEF:" + espacosPC[i].getDef());
                 espaco.setPrefSize(100, 140);
+                espaco.setOnAction(e -> {
+                    if (cartaSelecionada != -1){
+                        controller.atacar(cartaSelecionada, indexAlvo);
+                        cartaSelecionada = -1;
+                        atualizar();
+                    }
+                });
                 campoAdversario.getChildren().add(espaco);
             } else {
                 Button espaco = new Button("[ ]");
@@ -49,9 +58,17 @@ public class SalaJogo {
         campoJogador.setAlignment(Pos.CENTER);
         CartaCriatura[] espacos = controller.getJogo().getJogador(0).getCampo().getEspacosCriatura();
         for (int i = 0; i < 5; i++){
+            final int indexCarta = i;
             if (espacos[i] != null){
                 Button espaco = new Button(espacos[i].getNome() + "\nHP:" + espacos[i].getHp() + "\nATK:" + espacos[i].getAtk() + "\nDEF:" + espacos[i].getDef());
                 espaco.setPrefSize(100, 140);
+                espaco.setOnAction(e -> {
+                    cartaSelecionada = indexCarta;
+                    atualizar();
+                });
+                if (cartaSelecionada == i){
+                    espaco.setStyle("-fx-background-color: yellow;");
+                }
                 campoJogador.getChildren().add(espaco);
             } else {
                 Button espaco = new Button("[ ]");
