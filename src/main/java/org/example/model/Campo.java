@@ -37,7 +37,7 @@ public class Campo {
         if (espacosCriatura[index] != null){
             return false;
         }
-        carta.setTurnoEntrada(turnoAtual);
+        carta.setTurnoEntrada(turnoAtual - 1);
         espacosCriatura[index] = carta;
         return true;
     }
