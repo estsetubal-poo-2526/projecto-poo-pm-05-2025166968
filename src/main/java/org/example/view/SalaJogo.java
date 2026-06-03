@@ -20,6 +20,7 @@ public class SalaJogo {
     private Stage stage;
     private JogoController controller;
     private int cartaSelecionada = -1;
+    private boolean jaAtacou = false;
 
     public SalaJogo(Stage stage, JogoController controller){
         this.stage = stage;
@@ -29,7 +30,7 @@ public class SalaJogo {
     public void mostrar(){
         Text txtAdversario = new Text("Campo do Adversário");
         txtAdversario.setFont(Font.font(18));
-        HBox campoAdversario = new HBox(10);
+        HBox campoAdversario = new HBox(10); // CAMPO ADVERSARIO
         campoAdversario.setAlignment(Pos.CENTER);
         CartaCriatura[] espacosPC = controller.getJogo().getJogador(1).getCampo().getEspacosCriatura();
         for (int i = 0; i < 5; i++){
@@ -38,9 +39,10 @@ public class SalaJogo {
                 Button espaco = new Button(espacosPC[i].getNome() + "\nHP:" + espacosPC[i].getHp() + "\nATK:" + espacosPC[i].getAtk() + "\nDEF:" + espacosPC[i].getDef());
                 espaco.setPrefSize(100, 140);
                 espaco.setOnAction(e -> {
-                    if (cartaSelecionada != -1){
+                    if (cartaSelecionada != -1 && !jaAtacou){
                         controller.atacar(cartaSelecionada, indexAlvo);
                         cartaSelecionada = -1;
+                        jaAtacou = true;
                         atualizar();
                     }
                 });
@@ -54,7 +56,7 @@ public class SalaJogo {
 
         Text txtJogador = new Text("O Teu Campo");
         txtJogador.setFont(Font.font(18));
-        HBox campoJogador = new HBox(10);
+        HBox campoJogador = new HBox(10); // CAMPO JOGADOR
         campoJogador.setAlignment(Pos.CENTER);
         CartaCriatura[] espacos = controller.getJogo().getJogador(0).getCampo().getEspacosCriatura();
         for (int i = 0; i < 5; i++){
@@ -102,6 +104,11 @@ public class SalaJogo {
         }
 
         Button btnPassarTurno = new Button("Passar Turno");
+        btnPassarTurno.setOnAction(e -> {
+            jaAtacou = false;
+            controller.passarTurno();
+            atualizar();
+        });
         Button btnDesistir = new Button("Desistir");
         btnDesistir.setOnAction(e -> {
             Lobby lobby = new Lobby(stage);
