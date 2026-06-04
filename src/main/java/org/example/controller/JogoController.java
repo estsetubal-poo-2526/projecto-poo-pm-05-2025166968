@@ -26,9 +26,45 @@ public class JogoController {
 
     public void passarTurno(){
         jogo.proximoTurno();
+        turnoPC();
         if (jogo.isJogoTerminado()){
             terminarJogo();
         }
+    }
+
+    public void turnoPC(){
+        CartaCriatura[] campoPC = jogo.getJogador(1).getCampo().getEspacosCriatura();
+        CartaCriatura[] campoJogador = jogo.getJogador(0).getCampo().getEspacosCriatura();
+
+        jogadaPC();
+
+        CartaCriatura melhorAtacante = null;
+        int indexMelhor = -1;
+        for (int i = 0; i < 5; i++){
+            if (campoPC[i] != null && campoPC[i].podeAtacar(jogo.getJogador(1).getCampo().getTurnoAtual())){
+                if (melhorAtacante == null || campoPC[i].getAtk() > melhorAtacante.getAtk()){
+                    melhorAtacante = campoPC[i];
+                    indexMelhor = i;
+                }
+            }
+        }
+
+        if (melhorAtacante != null){
+            for (int j = 0; j < 5; j++){
+                if (campoJogador[j] != null){
+                    double fator = calcularFatorElemento(melhorAtacante.getElemento(), campoJogador[j].getElemento());
+                    int dano = (int)(melhorAtacante.getAtk() * fator);
+                    campoJogador[j].receberDano(dano);
+
+                    if (!campoJogador[j].estaViva()){
+                        jogo.getJogador(0).getCampo().removerCriatura(j);
+                        campoJogador[j] = null;
+                    }
+                    break;
+                }
+            }
+        }
+        jogo.verificarFimJogo();
     }
 
     public void atacar(int indexAtacante, int indexAlvo){
