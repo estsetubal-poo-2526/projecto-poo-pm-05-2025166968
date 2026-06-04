@@ -1,5 +1,6 @@
 package org.example.controller;
 import org.example.model.*;
+import org.example.view.EcraFimJogo;
 import org.example.view.SalaJogo;
 import org.example.view.Lobby;
 import javafx.stage.Stage;
@@ -141,9 +142,9 @@ public class JogoController {
 
     public void terminarJogo(){
         Jogador vencedor = jogo.getVencedor();
-        System.out.println("Vencedor: " + vencedor.getNome());
-        Lobby lobby = new Lobby(stage);
-        lobby.mostrar();
+        boolean jogadorGanhou = vencedor == jogo.getJogador(0);
+        EcraFimJogo ecraFim = new EcraFimJogo(stage, vencedor.getNome(), jogadorGanhou);
+        ecraFim.mostrar();
     }
 
     public Jogo getJogo(){
