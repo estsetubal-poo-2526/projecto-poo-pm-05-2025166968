@@ -53,7 +53,7 @@ public class Jogo {
         return jogadores[index];
     }
 
-    public int getTurnoAtual(int index){
+    public int getTurnoAtual(){
         return turnoAtual;
     }
 
