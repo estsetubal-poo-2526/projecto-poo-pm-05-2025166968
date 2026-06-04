@@ -13,6 +13,7 @@ import org.example.model.Carta;
 import java.util.List;
 import org.example.model.Campo;
 import org.example.model.CartaCriatura;
+import org.example.model.Posicao;
 
 import java.util.List;
 
@@ -61,17 +62,27 @@ public class SalaJogo {
         CartaCriatura[] espacos = controller.getJogo().getJogador(0).getCampo().getEspacosCriatura();
         for (int i = 0; i < 5; i++){
             final int indexCarta = i;
+
             if (espacos[i] != null){
-                Button espaco = new Button(espacos[i].getNome() + "\nHP:" + espacos[i].getHp() + "\nATK:" + espacos[i].getAtk() + "\nDEF:" + espacos[i].getDef());
+                String posicao = espacos[i].getPosicao() == Posicao.Ataque ? "[ATK]" : "[DEF]";
+                Button espaco = new Button(espacos[i].getNome() + "\n" + posicao + "\nHP:" + espacos[i].getHp() + "\nATK:" + espacos[i].getAtk() + "\nDEF:" + espacos[i].getDef());
                 espaco.setPrefSize(100, 140);
                 espaco.setOnAction(e -> {
                     cartaSelecionada = indexCarta;
                     atualizar();
                 });
+
+                espaco.setOnContextMenuRequested(e -> {
+                    espacos[indexCarta].mudarPosicao();
+                    atualizar();
+                });
+
                 if (cartaSelecionada == i){
                     espaco.setStyle("-fx-background-color: yellow;");
                 }
+
                 campoJogador.getChildren().add(espaco);
+
             } else {
                 Button espaco = new Button("[ ]");
                 espaco.setPrefSize(100, 140);

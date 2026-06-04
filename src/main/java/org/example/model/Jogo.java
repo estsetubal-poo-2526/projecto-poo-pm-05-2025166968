@@ -29,7 +29,8 @@ public class Jogo {
         if (jogadorAtivo == 0){
             turnoAtual++;
         }
-        jogadores[jogadorAtivo].getCampo().avancarTurno();
+        jogadores[0].getCampo().avancarTurno();
+        jogadores[1].getCampo().avancarTurno();
 
         jogadores[jogadorAtivo].sacarCarta();
 
