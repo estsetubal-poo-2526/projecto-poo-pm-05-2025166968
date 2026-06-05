@@ -118,7 +118,6 @@ public class SalaJogo {
         btnPassarTurno.setOnAction(e -> {
             jaAtacou = false;
             controller.passarTurno();
-            atualizar();
         });
         Button btnDesistir = new Button("Desistir");
         btnDesistir.setOnAction(e -> {

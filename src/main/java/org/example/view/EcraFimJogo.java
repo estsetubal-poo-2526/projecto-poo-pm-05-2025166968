@@ -28,8 +28,8 @@ public class EcraFimJogo {
         Button btnVoltar = new Button("Voltar ao Menu");
         btnVoltar.setPrefWidth(200);
         btnVoltar.setOnAction(e -> {
-            MenuPrincipal menu = new MenuPrincipal(stage);
-            menu.mostrar();
+            Lobby lobby = new Lobby(stage);
+            lobby.mostrar();
         });
 
         VBox layout = new VBox(30);

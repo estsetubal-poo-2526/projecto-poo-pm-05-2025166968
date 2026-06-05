@@ -27,10 +27,17 @@ public class JogoController {
 
     public void passarTurno(){
         jogo.proximoTurno();
+        if (jogo.isJogoTerminado()){
+            terminarJogo();
+            return;
+        }
         turnoPC();
         if (jogo.isJogoTerminado()){
             terminarJogo();
+            return;
         }
+        SalaJogo salaJogo = new SalaJogo(stage,this);
+        salaJogo.mostrar();
     }
 
     public void turnoPC(){
@@ -142,6 +149,7 @@ public class JogoController {
 
     public void terminarJogo(){
         Jogador vencedor = jogo.getVencedor();
+        System.out.println("Vencedor: " + vencedor.getNome());
         boolean jogadorGanhou = vencedor == jogo.getJogador(0);
         EcraFimJogo ecraFim = new EcraFimJogo(stage, vencedor.getNome(), jogadorGanhou);
         ecraFim.mostrar();
