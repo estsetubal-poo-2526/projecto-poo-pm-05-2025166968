@@ -1,13 +1,19 @@
 package org.example.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Perfil {
     private static Perfil instancia;
     private String nome;
     private int moedas;
+    private List<CartaCriatura> colecao;
 
     private Perfil(){
         this.nome = "Jogador";
-        this.moedas = 0;
+        this.moedas = 300;
+        this.colecao = new ArrayList<>();
+        adicionarCartasStarter();
     }
 
     public static Perfil getInstancia(){
@@ -15,6 +21,10 @@ public class Perfil {
             instancia = new Perfil();
         }
         return instancia;
+    }
+
+    private void adicionarCartasStarter(){
+        colecao.addAll(GeradorCartas.criarBaralhoTeste().getCartas());
     }
 
     public void adicionarMoedas(int quantidade){
@@ -35,5 +45,13 @@ public class Perfil {
 
     public void setNome(String nome){
         this.nome = nome;
+    }
+
+    public List<CartaCriatura> getColecao(){
+        return colecao;
+    }
+
+    public void adicionarCarta(CartaCriatura carta){
+        colecao.add(carta);
     }
 }

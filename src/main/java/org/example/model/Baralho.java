@@ -23,6 +23,10 @@ public class Baralho {
         return cartas.remove(index);
     }
 
+    public List<CartaCriatura> getCartas(){
+        return cartas;
+    }
+
     public boolean estaVazio(){
         return cartas.isEmpty();
     }
