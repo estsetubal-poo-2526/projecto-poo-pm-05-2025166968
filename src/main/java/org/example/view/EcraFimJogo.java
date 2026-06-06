@@ -6,6 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.example.model.Perfil;
 
 public class EcraFimJogo {
     private Stage stage;
@@ -23,7 +24,11 @@ public class EcraFimJogo {
         txtResultado.setFont(Font.font(64));
 
         Text txtVencedor = new Text("Vencedor: " + nomeVencedor);
-        txtVencedor.setFont(Font.font(64));
+        txtVencedor.setFont(Font.font(24));
+
+        int moedasGanhas = jogadorGanhou ? 40 : 10;
+        Text txtMoedas = new Text("+" + moedasGanhas + " moedas | Total: " + Perfil.getInstancia().getMoedas() + " moedas");
+        txtMoedas.setFont(Font.font(20));
 
         Button btnVoltar = new Button("Voltar ao Menu");
         btnVoltar.setPrefWidth(200);
@@ -34,7 +39,7 @@ public class EcraFimJogo {
 
         VBox layout = new VBox(30);
         layout.setAlignment(Pos.CENTER);
-        layout.getChildren().addAll(txtResultado, txtVencedor, btnVoltar);
+        layout.getChildren().addAll(txtResultado, txtVencedor, txtMoedas, btnVoltar);
 
         Scene scene = new Scene(layout, 1280, 720);
         stage.setScene(scene);

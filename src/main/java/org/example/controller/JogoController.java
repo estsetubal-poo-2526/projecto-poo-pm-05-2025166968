@@ -79,29 +79,17 @@ public class JogoController {
         CartaCriatura atacante = jogo.getJogador(0).getCampo().getEspacosCriatura()[indexAtacante];
         CartaCriatura alvo = jogo.getJogador(1).getCampo().getEspacosCriatura()[indexAlvo];
 
-        System.out.println("Atacante: " + (atacante != null ? atacante.getNome() : "null"));
-        System.out.println("Alvo: " + (alvo != null ? alvo.getNome() : "null"));
-
         if (atacante == null || alvo == null){
-            System.out.println("Atacante ou alvo é null!");
             return;
         }
 
-        System.out.println("Pode atacar: " + atacante.podeAtacar(jogo.getJogador(0).getCampo().getTurnoAtual()));
-        System.out.println("Turno entrada atacante: " + atacante.getTurnoEntrada());
-        System.out.println("Turno atual: " + jogo.getJogador(0).getCampo().getTurnoAtual());
-
         if (!atacante.podeAtacar(jogo.getJogador(0).getCampo().getTurnoAtual())){
-            System.out.println("Não pode atacar!");
             return;
         }
 
         double fator = calcularFatorElemento(atacante.getElemento(), alvo.getElemento());
         int dano = (int)(atacante.getAtk() * fator);
-        System.out.println("Dano: " + dano);
-        System.out.println("HP antes: " + alvo.getHp());
         alvo.receberDano(dano);
-        System.out.println("Hp depois: " + alvo.getHp());
 
         if (!alvo.estaViva()){
             jogo.getJogador(1).getCampo().removerCriatura(indexAlvo);
@@ -149,8 +137,14 @@ public class JogoController {
 
     public void terminarJogo(){
         Jogador vencedor = jogo.getVencedor();
-        System.out.println("Vencedor: " + vencedor.getNome());
         boolean jogadorGanhou = vencedor == jogo.getJogador(0);
+
+        if (jogadorGanhou){
+            Perfil.getInstancia().adicionarMoedas(40);
+        }else{
+            Perfil.getInstancia().adicionarMoedas(10);
+        }
+
         EcraFimJogo ecraFim = new EcraFimJogo(stage, vencedor.getNome(), jogadorGanhou);
         ecraFim.mostrar();
     }
