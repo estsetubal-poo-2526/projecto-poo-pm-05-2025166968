@@ -47,8 +47,12 @@ public class Lobby {
 
         for (Carta carta : Perfil.getInstancia().getColecao()){
             String info;
-            if (carta instanceof CartaEspecial)
-            Button btnCarta = new Button(carta.getNome() + "\n" + carta.getElemento() + "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() + "\nDEF:" + carta.getDef() + "\n" + carta.getRaridade());
+            if (carta instanceof CartaEspecial){
+                info = carta.getNome() + "\n[ESPECIAL]\n" + carta.getRaridade();
+            }else{
+                info = carta.getNome() + "\n" + carta.getElemento() + "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() + "\nDEF:" + carta.getDef() + "\n" + carta.getRaridade();
+            }
+            Button btnCarta = new Button(info);
             btnCarta.setPrefSize(120, 160);
             colecaoLayout.getChildren().add(btnCarta);
         }
