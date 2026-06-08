@@ -15,10 +15,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import org.example.controller.JogoController;
-import org.example.model.CartaCriatura;
 import org.example.model.GeradorCartas;
 import org.example.model.Perfil;
 import java.util.List;
+import org.example.model.Carta;
+import org.example.model.CartaEspecial;
 
 public class Lobby {
     private Stage stage;
@@ -44,7 +45,9 @@ public class Lobby {
         FlowPane colecaoLayout = new FlowPane(10, 10);
         colecaoLayout.setPadding(new Insets(10));
 
-        for (CartaCriatura carta : Perfil.getInstancia().getColecao()){
+        for (Carta carta : Perfil.getInstancia().getColecao()){
+            String info;
+            if (carta instanceof CartaEspecial)
             Button btnCarta = new Button(carta.getNome() + "\n" + carta.getElemento() + "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() + "\nDEF:" + carta.getDef() + "\n" + carta.getRaridade());
             btnCarta.setPrefSize(120, 160);
             colecaoLayout.getChildren().add(btnCarta);
@@ -63,7 +66,7 @@ public class Lobby {
         baralhoLayout.getChildren().add(txtBaralho);
 
         for (int i = 0; i < Perfil.getInstancia().getBaralhoAtual().size(); i++){
-            CartaCriatura carta = Perfil.getInstancia().getBaralhoAtual().get(i);
+            Carta carta = Perfil.getInstancia().getBaralhoAtual().get(i);
             final int index = i;
             Button btnCarta = new Button(carta.getNome() + " [" + carta.getRaridade() + "]");
             btnCarta.setPrefWidth(200);
@@ -80,7 +83,7 @@ public class Lobby {
         FlowPane colecaoParaBaralho = new FlowPane(5, 5);
         colecaoParaBaralho.setPadding(new Insets(10));
 
-        for (CartaCriatura carta : Perfil.getInstancia().getColecao()){
+        for (Carta carta : Perfil.getInstancia().getColecao()){
             Button btnCarta = new Button(carta.getNome() + "\n" + carta.getElemento() + "\n" + carta.getRaridade());
             btnCarta.setPrefSize(100, 80);
             btnCarta.setOnAction(e -> {

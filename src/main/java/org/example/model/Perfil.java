@@ -2,18 +2,17 @@ package org.example.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Perfil {
     private static Perfil instancia;
     private String nome;
     private int moedas;
-    private List<CartaCriatura> colecao;
-    private List<CartaCriatura> baralhoAtual;
+    private List<Carta> colecao;
+    private List<Carta> baralhoAtual;
 
     private Perfil(){
         this.nome = "Jogador";
-        this.moedas = 300;
+        this.moedas = 200;
         this.colecao = new ArrayList<>();
         this.baralhoAtual = new ArrayList<>();
         adicionarCartasStarter();
@@ -28,6 +27,9 @@ public class Perfil {
 
     private void adicionarCartasStarter(){
         colecao.addAll(GeradorCartas.criarBaralhoTeste().getCartas());
+        colecao.add(new Pocao("Poção Pequena", Raridade.Comum, 20));
+        colecao.add(new Pocao("Poção Média", Raridade.Comum, 40));
+        colecao.add(new Treinador("Treinador Básico", Raridade.Comum, 10, 0));
     }
 
     public void adicionarMoedas(int quantidade){
@@ -50,19 +52,19 @@ public class Perfil {
         this.nome = nome;
     }
 
-    public List<CartaCriatura> getColecao(){
+    public List<Carta> getColecao(){
         return colecao;
     }
 
-    public void adicionarCarta(CartaCriatura carta){
+    public void adicionarCarta(Carta carta){
         colecao.add(carta);
     }
 
-    public List<CartaCriatura> getBaralhoAtual(){
+    public List<Carta> getBaralhoAtual(){
         return baralhoAtual;
     }
 
-    public boolean adicionarAoBaralho(CartaCriatura carta){
+    public boolean adicionarAoBaralho(Carta carta){
         if (baralhoAtual.size() >= 15){
             return false;
         }
@@ -71,6 +73,13 @@ public class Perfil {
 
         if (count >= 4){
             return false;
+        }
+
+        if (carta instanceof CartaEspecial){
+            long especiais = baralhoAtual.stream().filter(c -> c instanceof CartaEspecial).count();
+            if (especiais >= 5){
+                return false;
+            }
         }
 
         baralhoAtual.add(carta);
