@@ -2,6 +2,7 @@ package org.example.view;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -36,9 +37,17 @@ public class SalaJogo {
                 espaco.setPrefSize(100, 140);
                 espaco.setOnAction(e -> {
                     if (cartaSelecionada != -1 && !jaAtacou){
-                        controller.atacar(cartaSelecionada, indexAlvo);
-                        cartaSelecionada = -1;
-                        jaAtacou = true;
+                        boolean atacou = controller.atacar(cartaSelecionada, indexAlvo);
+                        if (atacou) {
+                            cartaSelecionada = -1;
+                            jaAtacou = true;
+                        }else{
+                            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(Alert.AlertType.WARNING);
+                            alert.setTitle("Aviso");
+                            alert.setHeaderText(null);
+                            alert.setContentText("Não podes atacar com uma carta em modo de defesa!");
+                            alert.showAndWait();
+                        }
                         atualizar();
                     }
                 });

@@ -1,19 +1,22 @@
 package org.example.model;
-
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Perfil {
     private static Perfil instancia;
     private String nome;
     private int moedas;
-    private List<Carta> colecao;
+    private Map<String, Carta> colecao;
+    private Map<String, Integer> quantidades;
     private List<Carta> baralhoAtual;
 
     private Perfil(){
         this.nome = "Jogador";
         this.moedas = 200;
-        this.colecao = new ArrayList<>();
+        this.colecao = new LinkedHashMap<>();
+        this.quantidades = new LinkedHashMap<>();
         this.baralhoAtual = new ArrayList<>();
         adicionarCartasStarter();
     }
@@ -26,10 +29,12 @@ public class Perfil {
     }
 
     private void adicionarCartasStarter(){
-        colecao.addAll(GeradorCartas.criarBaralhoTeste().getCartas());
-        colecao.add(new Pocao("Poção Pequena", Raridade.Comum, 20));
-        colecao.add(new Pocao("Poção Média", Raridade.Comum, 40));
-        colecao.add(new Treinador("Treinador Básico", Raridade.Comum, 10, 0));
+        for (CartaCriatura carta : GeradorCartas.criarBaralhoTeste().getCartas()){
+            adicionarCarta(carta);
+        }
+        adicionarCarta(new Pocao("Poção Pequena", Raridade.Comum, 20));
+        adicionarCarta(new Pocao("Poção Média", Raridade.Incomum, 40));
+        adicionarCarta(new Treinador("Treinador Básico", Raridade.Comum, 10, 0));
     }
 
     public void adicionarMoedas(int quantidade){
@@ -52,12 +57,17 @@ public class Perfil {
         this.nome = nome;
     }
 
-    public List<Carta> getColecao(){
+    public Map<String, Carta> getColecao(){
         return colecao;
     }
 
     public void adicionarCarta(Carta carta){
-        colecao.add(carta);
+        colecao.put(carta.getNome(), carta);
+        quantidades.put(carta.getNome(), quantidades.getOrDefault(carta.getNome(), 0) + 1);
+    }
+
+    public Map<String, Integer> getQuantidades(){
+        return quantidades;
     }
 
     public List<Carta> getBaralhoAtual(){
@@ -72,6 +82,12 @@ public class Perfil {
         long count = baralhoAtual.stream().filter(c -> c.getNome().equals(carta.getNome())).count();
 
         if (count >= 4){
+            return false;
+        }
+
+        int qtd = quantidades.getOrDefault(carta.getNome(), 0);
+
+        if (qtd <= 0){
             return false;
         }
 

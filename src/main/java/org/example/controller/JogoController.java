@@ -48,16 +48,25 @@ public class JogoController {
     }
 
     public void passarTurno(){
+        if (jogo.isJogoTerminado()){
+            return;
+        }
+
         jogo.proximoTurno();
+
         if (jogo.isJogoTerminado()){
             terminarJogo();
             return;
         }
+
         turnoPC();
+
         if (jogo.isJogoTerminado()){
             terminarJogo();
             return;
         }
+
+        jogo.getJogador(0).sacarCarta();
         SalaJogo salaJogo = new SalaJogo(stage,this);
         salaJogo.mostrar();
     }
@@ -97,16 +106,20 @@ public class JogoController {
         jogo.verificarFimJogo();
     }
 
-    public void atacar(int indexAtacante, int indexAlvo){
+    public boolean atacar(int indexAtacante, int indexAlvo){
+        if (jogo.isJogoTerminado()){
+            return false;
+        }
+
         CartaCriatura atacante = jogo.getJogador(0).getCampo().getEspacosCriatura()[indexAtacante];
         CartaCriatura alvo = jogo.getJogador(1).getCampo().getEspacosCriatura()[indexAlvo];
 
         if (atacante == null || alvo == null){
-            return;
+            return false;
         }
 
         if (!atacante.podeAtacar(jogo.getJogador(0).getCampo().getTurnoAtual())){
-            return;
+            return false;
         }
 
         double fator = calcularFatorElemento(atacante.getElemento(), alvo.getElemento());
@@ -118,6 +131,7 @@ public class JogoController {
         }
 
         jogo.verificarFimJogo();
+        return true;
     }
 
     public void jogadaPC(){

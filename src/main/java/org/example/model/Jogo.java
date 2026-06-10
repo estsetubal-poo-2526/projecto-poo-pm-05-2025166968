@@ -26,13 +26,12 @@ public class Jogo {
 
     public void proximoTurno(){
         jogadorAtivo = (jogadorAtivo + 1) % 2;
+
         if (jogadorAtivo == 0){
             turnoAtual++;
         }
         jogadores[0].getCampo().avancarTurno();
         jogadores[1].getCampo().avancarTurno();
-
-        jogadores[jogadorAtivo].sacarCarta();
 
         verificarFimJogo();
     }
