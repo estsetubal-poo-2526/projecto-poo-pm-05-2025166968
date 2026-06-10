@@ -1,20 +1,14 @@
 package org.example.view;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.controller.JogoController;
-import org.example.model.Carta;
-import java.util.List;
-import org.example.model.Campo;
-import org.example.model.CartaCriatura;
-import org.example.model.Posicao;
-
+import org.example.model.*;
 import java.util.List;
 
 public class SalaJogo {
@@ -31,8 +25,9 @@ public class SalaJogo {
     public void mostrar(){
         Text txtAdversario = new Text("Campo do Adversário");
         txtAdversario.setFont(Font.font(18));
-        HBox campoAdversario = new HBox(10); // CAMPO ADVERSARIO
-        campoAdversario.setAlignment(Pos.CENTER);
+
+        HBox criaturaAdversario = new HBox(10); // CAMPO ADVERSARIO
+        criaturaAdversario.setAlignment(Pos.CENTER);
         CartaCriatura[] espacosPC = controller.getJogo().getJogador(1).getCampo().getEspacosCriatura();
         for (int i = 0; i < 5; i++){
             final int indexAlvo = i;
@@ -47,22 +42,41 @@ public class SalaJogo {
                         atualizar();
                     }
                 });
-                campoAdversario.getChildren().add(espaco);
-            } else {
+                criaturaAdversario.getChildren().add(espaco);
+            }else{
                 Button espaco = new Button("[ ]");
                 espaco.setPrefSize(100, 140);
-                campoAdversario.getChildren().add(espaco);
+                criaturaAdversario.getChildren().add(espaco);
             }
         }
 
+        VBox especiaisAdversario = new VBox(10);
+        especiaisAdversario.setAlignment(Pos.CENTER);
+        CartaEspecial[] especiaisPC = controller.getJogo().getJogador(1).getCampo().getEspacosEspecial();
+        for (int i = 0; i < 2; i++){
+            if (especiaisPC[i] != null) {
+                Button espaco = new Button(especiaisPC[i].getNome());
+                espaco.setPrefSize(80, 60);
+                especiaisAdversario.getChildren().add(espaco);
+            }else{
+                Button espaco = new Button("[ESP]");
+                espaco.setPrefSize(80, 60);
+                especiaisAdversario.getChildren().add(espaco);
+            }
+        }
+
+        HBox campoAdversario = new HBox(10);
+        campoAdversario.setAlignment(Pos.CENTER);
+        campoAdversario.getChildren().addAll(criaturaAdversario, especiaisAdversario);
+
         Text txtJogador = new Text("O Teu Campo");
         txtJogador.setFont(Font.font(18));
-        HBox campoJogador = new HBox(10); // CAMPO JOGADOR
-        campoJogador.setAlignment(Pos.CENTER);
+
+        HBox criaturaJogador = new HBox(10); // CAMPO JOGADOR
+        criaturaJogador.setAlignment(Pos.CENTER);
         CartaCriatura[] espacos = controller.getJogo().getJogador(0).getCampo().getEspacosCriatura();
         for (int i = 0; i < 5; i++){
             final int indexCarta = i;
-
             if (espacos[i] != null){
                 String posicao = espacos[i].getPosicao() == Posicao.Ataque ? "[ATK]" : "[DEF]";
                 Button espaco = new Button(espacos[i].getNome() + "\n" + posicao + "\nHP:" + espacos[i].getHp() + "\nATK:" + espacos[i].getAtk() + "\nDEF:" + espacos[i].getDef());
@@ -81,33 +95,71 @@ public class SalaJogo {
                     espaco.setStyle("-fx-background-color: yellow;");
                 }
 
-                campoJogador.getChildren().add(espaco);
+                criaturaJogador.getChildren().add(espaco);
 
-            } else {
+            }else{
                 Button espaco = new Button("[ ]");
                 espaco.setPrefSize(100, 140);
-                campoJogador.getChildren().add(espaco);
+                criaturaJogador.getChildren().add(espaco);
             }
         }
+
+        VBox especiaisJogador = new VBox(10);
+        especiaisJogador.setAlignment(Pos.CENTER);
+        CartaEspecial[] especiaisJog = controller.getJogo().getJogador(0).getCampo().getEspacosEspecial();
+        for (int i = 0; i < 2; i++){
+            final int indexEspecial = i;
+            if (especiaisJog[i] != null){
+                Button espaco = new Button(especiaisJog[i].getNome());
+                espaco.setPrefSize(80,60);
+                espaco.setOnAction(e -> {
+                    controller.usarCartaEspecial(0, indexEspecial);
+                    atualizar();
+                });
+                especiaisJogador.getChildren().add(espaco);
+            }else{
+                Button espaco = new Button("[ESP]");
+                espaco.setPrefSize(80,60);
+                especiaisJogador.getChildren().add(espaco);
+            }
+        }
+
+        HBox campoJogador = new HBox(10);
+        campoJogador.setAlignment(Pos.CENTER);
+        campoJogador.getChildren().addAll(criaturaJogador, especiaisJogador);
 
         Text txtMao = new Text("Mão");
         txtMao.setFont(Font.font(14));
         HBox mao = new HBox(10);
         mao.setAlignment(Pos.CENTER);
         List<Carta> cartasMao = controller.getJogo().getJogador(0).getMao();
-        for (int i = 0; i < cartasMao.size(); i++){
+        for (int i = 0; i < cartasMao.size(); i++) {
             Carta carta = cartasMao.get(i);
             final int indexMao = i;
-            Button btnCarta = new Button(carta.getNome() + "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() + "\nDEF:" + carta.getDef());
-
+            Button btnCarta;
+            if (carta instanceof CartaEspecial) {
+                btnCarta = new Button(carta.getNome() + "\n[ESPECIAL]" + carta.getRaridade());
+            } else {
+                btnCarta = new Button(carta.getNome() + "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() + "\nDEF:" + carta.getDef());
+            }
             btnCarta.setPrefSize(100, 140);
-            btnCarta.setOnAction(e ->{
+            btnCarta.setOnAction(e -> {
                 Campo campo = controller.getJogo().getJogador(0).getCampo();
-                for (int j = 0; j < 5; j++){
-                    if (campo.getEspacosCriatura()[j] == null){
-                        controller.getJogo().getJogador(0).jogarCriatura(indexMao, j);
-                        atualizar();
-                        break;
+                if (carta instanceof CartaEspecial) {
+                    for (int j = 0; j < 2; j++) {
+                        if (campo.getEspacosCriatura()[j] == null) {
+                            controller.getJogo().getJogador(0).jogarEspecial(indexMao, j);
+                            atualizar();
+                            break;
+                        }
+                    }
+                } else {
+                    for (int j = 0; j < 5; j++) {
+                        if (campo.getEspacosCriatura()[j] == null) {
+                            controller.getJogo().getJogador(0).jogarCriatura(indexMao, j);
+                            atualizar();
+                            break;
+                        }
                     }
                 }
             });
@@ -131,6 +183,7 @@ public class SalaJogo {
 
         VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(10));
         layout.getChildren().addAll(txtAdversario, campoAdversario, txtJogador, campoJogador, txtMao, mao, botoes);
 
         Scene scene = new Scene(layout, 1280, 720);

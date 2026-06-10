@@ -25,6 +25,28 @@ public class JogoController {
         salaJogo.mostrar();
     }
 
+    public void usarCartaEspecial(int indexJogador, int indexEspecial){
+        CartaEspecial especial = jogo.getJogador(indexJogador).getCampo().getEspacosEspecial()[indexEspecial];
+        if (especial == null){
+            return;
+        }
+
+        CartaCriatura[] criaturas = getJogo().getJogador(indexJogador).getCampo().getEspacosCriatura();
+        CartaCriatura alvo = null;
+        for (CartaCriatura c : criaturas){
+            if (c != null){
+                if (alvo == null || c.getHp() < alvo.getHp()){
+                    alvo = c;
+                }
+            }
+        }
+
+        if (alvo != null){
+            especial.aplicarEfeito(alvo);
+            jogo.getJogador(indexJogador).getCampo().removerEspecial(indexEspecial);
+        }
+    }
+
     public void passarTurno(){
         jogo.proximoTurno();
         if (jogo.isJogoTerminado()){
