@@ -2,13 +2,12 @@ package org.example.view;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.controller.JogoController;
-import org.example.model.Baralho;
 import org.example.model.Perfil;
 
 public class Lobby {
@@ -25,7 +24,8 @@ public class Lobby {
         txtNome.getStyleClass().add("texto-normal");
 
         String nomeBaralhoAtual = Perfil.getInstancia().getBaralhoSelecionado() != null ?
-                Perfil.getInstancia().getBaralhoSelecionado() : "[Baralho]";
+                Perfil.getInstancia().getBaralhoSelecionado() : "Sem baralho";
+
         Button btnImgBaralho = new Button(nomeBaralhoAtual);
         btnImgBaralho.setPrefSize(200, 260);
         btnImgBaralho.getStyleClass().add("placeholder");
@@ -58,15 +58,23 @@ public class Lobby {
 
         Button btnIniciarJogo = new Button("⚔ Iniciar Jogo");
         btnIniciarJogo.getStyleClass().add("btn-primario");
-        btnIniciarJogo.setPrefWidth(200);
+        btnIniciarJogo.setPrefWidth(220);
         btnIniciarJogo.setOnAction(e -> {
+            if (Perfil.getInstancia().getBaralhoSelecionado() == null) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Sem baralho");
+                alert.setHeaderText(null);
+                alert.setContentText("Tens de selecionar um baralho antes de iniciar o jogo!\nVai a Baralhos e clica em 'Usar este Baralho'.");
+                alert.showAndWait();
+                return;
+            }
             JogoController controller = new JogoController(stage);
             controller.iniciarJogo();
         });
 
         Button btnSair = new Button("Sair");
         btnSair.getStyleClass().add("btn-secundario");
-        btnSair.setPrefWidth(200);
+        btnSair.setPrefWidth(220);
         btnSair.setOnAction(e -> {
             Perfil.guardar();
             stage.close();

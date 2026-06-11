@@ -29,24 +29,22 @@ public class LojaView {
         Text txtMoedas = new Text("💰 " + Perfil.getInstancia().getMoedas() + " moedas");
         txtMoedas.getStyleClass().add("texto-moedas");
 
-        // Pack Básico
-        VBox packBasicoBox = criarPack("Pack Básico", "6 cartas", "50 moedas",
-                "60% Comum\n28% Incomum\n9% Raro\n2.5% Épico\n0.5% Lendário",
-                "#e74c3c", 50);
+        // Packs
+        VBox packBasico = criarPack("Pack Básico", "6 cartas aleatórias",
+                "60% Comum  •  28% Incomum\n9% Raro  •  2.5% Épico  •  0.5% Lendário",
+                "50", "#e74c3c", 50);
 
-        // Pack Raro
-        VBox packRaroBox = criarPack("Pack Raro", "6 cartas", "100 moedas",
-                "24% Comum\n29% Incomum\n37% Raro\n8% Épico\n2% Lendário",
-                "#2980b9", 100);
+        VBox packRaro = criarPack("Pack Raro", "6 cartas aleatórias",
+                "24% Comum  •  29% Incomum\n37% Raro  •  8% Épico  •  2% Lendário",
+                "100", "#2980b9", 100);
 
-        // Pack Épico
-        VBox packEpicoBox = criarPack("Pack Épico", "6 cartas", "200 moedas",
-                "18% Comum\n23% Incomum\n33% Raro\n19% Épico\n7% Lendário",
-                "#8e44ad", 200);
+        VBox packEpico = criarPack("Pack Épico", "6 cartas aleatórias",
+                "18% Comum  •  23% Incomum\n33% Raro  •  19% Épico  •  7% Lendário",
+                "200", "#8e44ad", 200);
 
         HBox packs = new HBox(30);
         packs.setAlignment(Pos.CENTER);
-        packs.getChildren().addAll(packBasicoBox, packRaroBox, packEpicoBox);
+        packs.getChildren().addAll(packBasico, packRaro, packEpico);
 
         Button btnVoltar = new Button("← Voltar");
         btnVoltar.getStyleClass().add("btn-voltar");
@@ -63,24 +61,32 @@ public class LojaView {
         stage.show();
     }
 
-    private VBox criarPack(String nome, String cartas, String preco, String odds, String cor, int custo) {
+    private VBox criarPack(String nome, String descricao, String odds, String preco, String cor, int custo) {
         Text txtNome = new Text(nome);
-        txtNome.setStyle("-fx-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
+        txtNome.setStyle("-fx-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;");
 
-        Text txtCartas = new Text(cartas);
-        txtCartas.setStyle("-fx-fill: rgba(255,255,255,0.8); -fx-font-size: 13px;");
+        Text txtDescricao = new Text(descricao);
+        txtDescricao.setStyle("-fx-fill: rgba(255,255,255,0.8); -fx-font-size: 13px;");
+
+        // placeholder imagem pack
+        Button imgPack = new Button("[Pack]");
+        imgPack.setPrefSize(120, 160);
+        imgPack.setStyle("-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: rgba(255,255,255,0.4); " +
+                "-fx-background-radius: 10; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 10;");
+        imgPack.setMouseTransparent(true);
 
         Text txtOdds = new Text(odds);
-        txtOdds.setStyle("-fx-fill: rgba(255,255,255,0.7); -fx-font-size: 11px;");
+        txtOdds.setStyle("-fx-fill: rgba(255,255,255,0.65); -fx-font-size: 11px;");
 
-        Button btnComprar = new Button("Comprar - " + preco);
+        Button btnComprar = new Button("Comprar  💰 " + preco);
         btnComprar.getStyleClass().add("btn-primario");
+        btnComprar.setPrefWidth(200);
         btnComprar.setOnAction(e -> {
             if (Perfil.getInstancia().getMoedas() >= custo) {
                 Perfil.getInstancia().removerMoedas(custo);
-                List<Carta> cartasObtidas = new ArrayList<>(GeradorCartas.abrirPack());
-                for (Carta carta : cartasObtidas) Perfil.getInstancia().adicionarCarta(carta);
-                EcraAberturaPack ecra = new EcraAberturaPack(stage, cartasObtidas);
+                List<Carta> cartas = new ArrayList<>(GeradorCartas.abrirPack());
+                for (Carta carta : cartas) Perfil.getInstancia().adicionarCarta(carta);
+                EcraAberturaPack ecra = new EcraAberturaPack(stage, cartas);
                 ecra.setLobby(lobby);
                 ecra.mostrar();
             } else {
@@ -95,11 +101,11 @@ public class LojaView {
 
         VBox box = new VBox(12);
         box.setAlignment(Pos.CENTER);
-        box.setPadding(new Insets(20));
-        box.setPrefSize(270, 300);
-        box.setStyle("-fx-background-color: " + cor + "; -fx-background-radius: 15; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 5);");
-        box.getChildren().addAll(txtNome, txtCartas, txtOdds, btnComprar);
+        box.setPadding(new Insets(25));
+        box.setPrefSize(280, 380);
+        box.setStyle("-fx-background-color: " + cor + "; -fx-background-radius: 18; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0, 0, 6);");
+        box.getChildren().addAll(txtNome, imgPack, txtDescricao, txtOdds, btnComprar);
 
         return box;
     }

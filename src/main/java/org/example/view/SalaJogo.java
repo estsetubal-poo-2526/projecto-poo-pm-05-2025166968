@@ -4,7 +4,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.controller.JogoController;
@@ -40,6 +39,10 @@ public class SalaJogo {
                         "\nDEF:" + espacosPC[i].getDef());
                 espaco.setPrefSize(100, 130);
                 espaco.getStyleClass().add(getCardStyle(espacosPC[i]));
+                // rotação horizontal se estiver em defesa
+                if (espacosPC[i].getPosicao() == Posicao.Defesa) {
+                    espaco.setRotate(90);
+                }
                 espaco.setOnAction(e -> {
                     if (cartaSelecionada != -1 && !jaAtacou) {
                         boolean atacou = controller.atacar(cartaSelecionada, indexAlvo);
@@ -99,12 +102,16 @@ public class SalaJogo {
         for (int i = 0; i < 5; i++) {
             final int indexCarta = i;
             if (espacos[i] != null) {
-                String posicao = espacos[i].getPosicao() == Posicao.Ataque ? "⚔ ATK" : "🛡 DEF";
-                Button espaco = new Button(espacos[i].getNome() + "\n" + posicao +
+                String posicaoTexto = espacos[i].getPosicao() == Posicao.Ataque ? "⚔ ATK" : "🛡 DEF";
+                Button espaco = new Button(espacos[i].getNome() + "\n" + posicaoTexto +
                         "\nHP:" + espacos[i].getHp() +
                         "\nATK:" + espacos[i].getAtk() +
                         "\nDEF:" + espacos[i].getDef());
                 espaco.setPrefSize(100, 130);
+                // rotação horizontal se estiver em defesa
+                if (espacos[i].getPosicao() == Posicao.Defesa) {
+                    espaco.setRotate(90);
+                }
                 if (cartaSelecionada == i) {
                     espaco.getStyleClass().add("carta-selecionada");
                 } else {
@@ -217,16 +224,16 @@ public class SalaJogo {
         botoes.setAlignment(Pos.CENTER);
         botoes.getChildren().addAll(btnPassarTurno, btnDesistir);
 
+        // === BARALHOS À DIREITA ===
         int cartasBaralhoJogador = controller.getJogo().getJogador(0).getBaralho().getTamanho();
         int cartasBaralhoPC = controller.getJogo().getJogador(1).getBaralho().getTamanho();
 
-        // === BARALHOS À DIREITA ===
-        Button btnBaralhoPC = new Button("🃏\n" + cartasBaralhoPC);
+        Button btnBaralhoPC = new Button("🃏\nPC\n" + cartasBaralhoPC);
         btnBaralhoPC.setPrefSize(70, 100);
         btnBaralhoPC.getStyleClass().add("espaco-carta");
         btnBaralhoPC.setMouseTransparent(true);
 
-        Button btnBaralhoJogador = new Button("🃏\n" + cartasBaralhoJogador);
+        Button btnBaralhoJogador = new Button("🃏\nJogador\n" + cartasBaralhoJogador);
         btnBaralhoJogador.setPrefSize(70, 100);
         btnBaralhoJogador.getStyleClass().add("espaco-carta");
         btnBaralhoJogador.setMouseTransparent(true);
@@ -236,7 +243,7 @@ public class SalaJogo {
         baralhosLateral.setPadding(new Insets(10));
         baralhosLateral.getChildren().addAll(btnBaralhoPC, btnBaralhoJogador);
 
-        // === CENTRO - Campo ===
+        // === CENTRO ===
         VBox centro = new VBox(12);
         centro.setAlignment(Pos.CENTER);
         centro.getChildren().addAll(
@@ -261,13 +268,15 @@ public class SalaJogo {
 
     private String getCardStyle(Carta carta) {
         if (carta instanceof CartaEspecial) return "card-especial";
-        if (carta.getElemento() == Elemento.Fogo) return "card-fogo";
-        if (carta.getElemento() == Elemento.Agua) return "card-agua";
-        if (carta.getElemento() == Elemento.Erva) return "card-erva";
-        if (carta.getElemento() == Elemento.Eletrico) return "card-eletrico";
-        if (carta.getElemento() == Elemento.Gelo) return "card-gelo";
-        if (carta.getElemento() == Elemento.Voador) return "card-voador";
-        return "card-normal";
+        return switch (carta.getElemento()) {
+            case Fogo -> "card-fogo";
+            case Agua -> "card-agua";
+            case Erva -> "card-erva";
+            case Eletrico -> "card-eletrico";
+            case Gelo -> "card-gelo";
+            case Voador -> "card-voador";
+            default -> "card-normal";
+        };
     }
 
     public void atualizar() {
