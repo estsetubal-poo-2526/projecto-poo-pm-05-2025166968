@@ -60,8 +60,24 @@ public class Jogador {
         return false;
     }
 
-    public boolean semCartas(){
-        return baralho.estaVazio() && mao.isEmpty() && !campo.temCriaturas();
+    public boolean semCartas() {
+        boolean temCriaturaBaralho = false;
+        for (Carta c : baralho.getCartas()) {
+            if (c instanceof CartaCriatura) {
+                temCriaturaBaralho = true;
+                break;
+            }
+        }
+
+        boolean temCriaturaMao = false;
+        for (Carta c : mao) {
+            if (c instanceof CartaCriatura) {
+                temCriaturaMao = true;
+                break;
+            }
+        }
+
+        return !campo.temCriaturas() && !temCriaturaBaralho && !temCriaturaMao;
     }
 
     public void adicionarMoedas(int quantidade){

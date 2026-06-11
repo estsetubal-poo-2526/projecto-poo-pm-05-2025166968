@@ -38,9 +38,11 @@ public class Jogo {
 
     public void verificarFimJogo(){
         for (Jogador j : jogadores){
+            System.out.println(j.getNome() + " | Campo: " + j.getCampo().temCriaturas() + " | semCartas: " + j.semCartas());
             if (j.semCartas()){
                 jogoTerminado = true;
                 vencedor = j == jogadores[0] ? jogadores[1] : jogadores[0];
+                System.out.println("Jogo terminou! Vencedor: " + vencedor.getNome());
             }
         }
     }

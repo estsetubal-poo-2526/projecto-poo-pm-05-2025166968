@@ -14,7 +14,7 @@ public class Pocao extends CartaEspecial implements java.io.Serializable{
 
     @Override
     public void aplicarEfeito(Carta alvo){
-        if (alvo instanceof  CartaEspecial){
+        if (alvo instanceof CartaCriatura){
             CartaCriatura criatura = (CartaCriatura) alvo;
             int novoHp = Math.min(criatura.getHp() + cura, criatura.getMaxHp());
             criatura.setHp(novoHp);

@@ -15,7 +15,7 @@ public class JogoController {
         this.stage = stage;
         this.jogo = new Jogo("Jogador", "PC");
         jogo.getJogador(0).setBaralho(GeradorCartas.criarBaralhoTeste());
-        jogo.getJogador(1).setBaralho(GeradorCartas.criarBaralhoTeste());
+        jogo.getJogador(1).setBaralho(GeradorCartas.criarBaralhoPC());
     }
 
     public void iniciarJogo(){
@@ -49,6 +49,7 @@ public class JogoController {
 
     public void passarTurno(){
         if (jogo.isJogoTerminado()){
+            terminarJogo();
             return;
         }
 
@@ -59,50 +60,91 @@ public class JogoController {
             return;
         }
 
+        jogo.getJogador(1).sacarCarta();
+
+        jogo.verificarFimJogo();
+        if (jogo.isJogoTerminado()){
+            terminarJogo();
+            return;
+        }
+
         turnoPC();
 
+        jogo.verificarFimJogo();
         if (jogo.isJogoTerminado()){
             terminarJogo();
             return;
         }
 
         jogo.getJogador(0).sacarCarta();
-        SalaJogo salaJogo = new SalaJogo(stage,this);
+
+        jogo.verificarFimJogo();
+        if (jogo.isJogoTerminado()){
+            terminarJogo();
+            return;
+        }
+
+        SalaJogo salaJogo = new SalaJogo(stage, this);
         salaJogo.mostrar();
     }
 
-    public void turnoPC(){
+    public void turnoPC() {
         CartaCriatura[] campoPC = jogo.getJogador(1).getCampo().getEspacosCriatura();
         CartaCriatura[] campoJogador = jogo.getJogador(0).getCampo().getEspacosCriatura();
 
         jogadaPC();
 
         CartaCriatura melhorAtacante = null;
-        int indexMelhor = -1;
-        for (int i = 0; i < 5; i++){
-            if (campoPC[i] != null && campoPC[i].podeAtacar(jogo.getJogador(1).getCampo().getTurnoAtual())){
-                if (melhorAtacante == null || campoPC[i].getAtk() > melhorAtacante.getAtk()){
+        for (int i = 0; i < 5; i++) {
+            if (campoPC[i] != null && campoPC[i].podeAtacar(jogo.getJogador(1).getCampo().getTurnoAtual())) {
+                if (melhorAtacante == null || campoPC[i].getAtk() > melhorAtacante.getAtk()) {
                     melhorAtacante = campoPC[i];
-                    indexMelhor = i;
                 }
             }
         }
 
-        if (melhorAtacante != null){
-            for (int j = 0; j < 5; j++){
-                if (campoJogador[j] != null){
+        if (melhorAtacante != null) {
+            CartaCriatura melhorAlvo = null;
+            int indexMelhorAlvo = -1;
+            int melhorDanoReal = -1;
+
+            for (int j = 0; j < 5; j++) {
+                if (campoJogador[j] != null) {
                     double fator = calcularFatorElemento(melhorAtacante.getElemento(), campoJogador[j].getElemento());
-                    int dano = (int)(melhorAtacante.getAtk() * fator);
-                    campoJogador[j].receberDano(dano);
+                    int danoBase = (int)(melhorAtacante.getAtk() * fator);
 
-                    if (!campoJogador[j].estaViva()){
-                        jogo.getJogador(0).getCampo().removerCriatura(j);
-                        campoJogador[j] = null;
+                    int danoReal;
+                    if (campoJogador[j].getPosicao() == org.example.model.Posicao.Defesa) {
+                        danoReal = Math.max(0, danoBase - campoJogador[j].getDef());
+                    } else {
+                        danoReal = danoBase;
                     }
-                    break;
+
+                    boolean vaaMatar = danoReal >= campoJogador[j].getHp();
+                    boolean melhorVaaMatar = melhorAlvo != null && melhorDanoReal >= melhorAlvo.getHp();
+
+                    if (melhorAlvo == null ||
+                            (vaaMatar && !melhorVaaMatar) ||
+                            (vaaMatar == melhorVaaMatar && danoReal > melhorDanoReal)) {
+                        melhorAlvo = campoJogador[j];
+                        indexMelhorAlvo = j;
+                        melhorDanoReal = danoReal;
+                    }
+                }
+            }
+
+            if (melhorAlvo != null) {
+                double fator = calcularFatorElemento(melhorAtacante.getElemento(), melhorAlvo.getElemento());
+                int dano = (int)(melhorAtacante.getAtk() * fator);
+                melhorAlvo.receberDano(dano);
+
+                if (!melhorAlvo.estaViva()) {
+                    jogo.getJogador(0).getCampo().removerCriatura(indexMelhorAlvo);
+                    campoJogador[indexMelhorAlvo] = null;
                 }
             }
         }
+
         jogo.verificarFimJogo();
     }
 
@@ -134,16 +176,31 @@ public class JogoController {
         return true;
     }
 
-    public void jogadaPC(){
+    public void jogadaPC() {
         Jogador pc = jogo.getJogador(1);
         Campo campoPC = pc.getCampo();
-
-        for (int i = 0; i < 5; i++){
-            if (campoPC.getEspacosCriatura()[i] == null && !pc.getMao().isEmpty()){
-                pc.jogarCriatura(0, i);
-
-                if (campoPC.getEspacosCriatura()[i] != null){
-                    campoPC.getEspacosCriatura()[i].setTurnoEntrada(0);
+        System.out.println("Mão PC: " + pc.getMao().size() + " | Baralho PC: " + pc.getBaralho().getTamanho());
+        for (int i = 0; i < 5; i++) {
+            System.out.println("Slot " + i + ": " + (campoPC.getEspacosCriatura()[i] != null ? campoPC.getEspacosCriatura()[i].getNome() : "vazio"));
+            if (campoPC.getEspacosCriatura()[i] == null && !pc.getMao().isEmpty()) {
+                for (int j = 0; j < pc.getMao().size(); j++) {
+                    if (pc.getMao().get(j) instanceof CartaCriatura) {
+                        pc.jogarCriatura(j, i);
+                        if (campoPC.getEspacosCriatura()[i] != null) {
+                            campoPC.getEspacosCriatura()[i].setTurnoEntrada(0);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 2; i++) {
+            if (campoPC.getEspacosEspecial()[i] == null && !pc.getMao().isEmpty()) {
+                for (int j = 0; j < pc.getMao().size(); j++) {
+                    if (pc.getMao().get(j) instanceof CartaEspecial) {
+                        pc.jogarEspecial(j, i);
+                        break;
+                    }
                 }
             }
         }

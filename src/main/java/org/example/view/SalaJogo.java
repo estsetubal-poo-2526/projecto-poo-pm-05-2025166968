@@ -138,8 +138,7 @@ public class SalaJogo {
                 espaco.setPrefSize(80, 60);
                 espaco.getStyleClass().add("card-especial");
                 espaco.setOnAction(e -> {
-                    controller.usarCartaEspecial(0, indexEspecial);
-                    atualizar();
+                    new EcraUsarEspecial(stage, controller, indexEspecial, especiaisJog[indexEspecial]).mostrar();
                 });
                 especiaisJogador.getChildren().add(espaco);
             } else {

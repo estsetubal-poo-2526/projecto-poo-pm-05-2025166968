@@ -56,7 +56,7 @@ public class Perfil implements java.io.Serializable{
     }
 
     private void adicionarCartasStarter(){
-        for (CartaCriatura carta : GeradorCartas.criarBaralhoTeste().getCartas()){
+        for (Carta carta : GeradorCartas.criarBaralhoTeste().getCartas()){
             adicionarCarta(carta);
         }
         adicionarCarta(new Pocao("Poção Pequena", Raridade.Comum, 20));

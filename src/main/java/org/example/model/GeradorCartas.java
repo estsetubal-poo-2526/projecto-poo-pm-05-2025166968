@@ -29,21 +29,34 @@ public class GeradorCartas {
         todasAsCartas.add(new CartaCriatura("Venusaur", 95, 55, 35, Elemento.Erva, Raridade.Lendario));
     }
 
-    public static Baralho criarBaralhoTeste(){
+    public static Baralho criarBaralhoTeste() {
         Baralho baralho = new Baralho();
-        for (CartaCriatura carta : todasAsCartas){
+        for (CartaCriatura carta : todasAsCartas) {
             baralho.adicionarCarta(new CartaCriatura(carta.getNome(), carta.getHp(), carta.atk, carta.getDef(), carta.getElemento(), carta.getRaridade()));
         }
+        baralho.adicionarCarta(new Pocao("Poção Pequena", Raridade.Comum, 20));
+        baralho.adicionarCarta(new Pocao("Poção Média", Raridade.Incomum, 40));
+        baralho.adicionarCarta(new Treinador("Treinador Básico", Raridade.Comum, 10, 0));
         return baralho;
     }
 
-    public static List<CartaCriatura> abrirPack(){
-        List<CartaCriatura> pack = new ArrayList<>();
-        for (int i = 0; i < 6; i++){
-            Raridade raridade = sortearRaridade();
-            CartaCriatura carta = cartaAleatoriaDaRaridade(raridade);
-            if (carta != null){
-                pack.add(new CartaCriatura(carta.getNome(), carta.getHp(), carta.atk, carta.getDef(), carta.getElemento(), carta.getRaridade()));
+    public static List<Carta> abrirPack() {
+        List<Carta> pack = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            // 10% de chance de ser carta especial
+            if (random.nextInt(10) == 0) {
+                if (random.nextBoolean()) {
+                    pack.add(new Pocao("Poção Pequena", Raridade.Comum, 20));
+                } else {
+                    pack.add(new Treinador("Treinador Básico", Raridade.Comum, 10, 0));
+                }
+            } else {
+                Raridade raridade = sortearRaridade();
+                CartaCriatura carta = cartaAleatoriaDaRaridade(raridade);
+                if (carta != null) {
+                    pack.add(new CartaCriatura(carta.getNome(), carta.getHp(), carta.atk,
+                            carta.getDef(), carta.getElemento(), carta.getRaridade()));
+                }
             }
         }
         return pack;
@@ -82,5 +95,21 @@ public class GeradorCartas {
             return todasAsCartas.get(random.nextInt(todasAsCartas.size()));
         }
         return filtradas.get(random.nextInt(filtradas.size()));
+    }
+
+    public static Baralho criarBaralhoPC() {
+        Baralho baralho = new Baralho();
+        for (int i = 0; i < 12; i++) {
+            Raridade raridade = sortearRaridade();
+            CartaCriatura carta = cartaAleatoriaDaRaridade(raridade);
+            if (carta != null) {
+                baralho.adicionarCarta(new CartaCriatura(carta.getNome(), carta.getHp(), carta.atk,
+                        carta.getDef(), carta.getElemento(), carta.getRaridade()));
+            }
+        }
+        baralho.adicionarCarta(new Pocao("Poção Pequena", Raridade.Comum, 20));
+        baralho.adicionarCarta(new Pocao("Poção Média", Raridade.Incomum, 40));
+        baralho.adicionarCarta(new Treinador("Treinador Básico", Raridade.Comum, 10, 0));
+        return baralho;
     }
 }
