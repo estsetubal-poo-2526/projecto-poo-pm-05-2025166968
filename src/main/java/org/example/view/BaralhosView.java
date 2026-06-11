@@ -69,6 +69,12 @@ public class BaralhosView {
                 alert.setHeaderText(null);
                 alert.setContentText("O baralho tem de ter 15 cartas!");
                 alert.showAndWait();
+            } else if (Perfil.getInstancia().getBaralhosSalvos().size() >= 4) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Erro");
+                alert.setHeaderText(null);
+                alert.setContentText("Já tens 4 baralhos guardados! Apaga um para criar outro.");
+                alert.showAndWait();
             } else {
                 Perfil.getInstancia().salvarBaralho(nome);
                 mostrar();

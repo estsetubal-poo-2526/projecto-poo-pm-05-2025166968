@@ -8,6 +8,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.controller.JogoController;
+import org.example.model.Baralho;
 import org.example.model.Perfil;
 
 public class Lobby {
@@ -66,7 +67,10 @@ public class Lobby {
         Button btnSair = new Button("Sair");
         btnSair.getStyleClass().add("btn-secundario");
         btnSair.setPrefWidth(200);
-        btnSair.setOnAction(e -> stage.close());
+        btnSair.setOnAction(e -> {
+            Perfil.guardar();
+            stage.close();
+        });
 
         VBox centro = new VBox(15);
         centro.setAlignment(Pos.CENTER);

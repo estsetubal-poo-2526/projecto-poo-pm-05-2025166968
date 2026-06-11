@@ -209,6 +209,7 @@ public class SalaJogo {
         Button btnDesistir = new Button("Desistir");
         btnDesistir.getStyleClass().add("btn-desistir");
         btnDesistir.setOnAction(e -> {
+            Perfil.guardar();
             Lobby lobby = new Lobby(stage);
             lobby.mostrar();
         });

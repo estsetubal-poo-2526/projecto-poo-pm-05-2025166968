@@ -1,6 +1,6 @@
 package org.example.model;
 
-public class Pocao extends CartaEspecial {
+public class Pocao extends CartaEspecial implements java.io.Serializable{
     private int cura;
 
     public Pocao(String nome, Raridade raridade, int cura){

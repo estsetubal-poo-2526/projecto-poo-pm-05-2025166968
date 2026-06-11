@@ -1,6 +1,6 @@
 package org.example.model;
 
-public class Treinador extends CartaEspecial {
+public class Treinador extends CartaEspecial implements java.io.Serializable{
     private int buffAtk;
     private int buffDef;
 

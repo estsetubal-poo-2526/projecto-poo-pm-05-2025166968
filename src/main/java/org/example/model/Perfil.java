@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Perfil {
+public class Perfil implements java.io.Serializable{
     private static Perfil instancia;
     private String nome;
     private String baralhoSelecionado;
@@ -30,6 +30,7 @@ public class Perfil {
             return;
         }
         baralhosSalvos.put(nome, new ArrayList<>(baralhoAtual));
+        baralhoAtual.clear();
     }
 
     public void selecionarBaralho(String nome){
@@ -131,6 +132,35 @@ public class Perfil {
     public void removerDoBaralho(int index){
         if (index >= 0 && index < baralhoAtual.size()){
             baralhoAtual.remove(index);
+        }
+    }
+
+    public void setBaralhoSelecionado(String nome){
+        this.baralhoSelecionado = nome;
+    }
+
+    public static final String FICHEIRO = "perfil.dat";
+
+    public static void guardar(){
+        try (java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(new java.io.FileOutputStream(FICHEIRO))){
+            oos.writeObject(instancia);
+            System.out.println("Perfil Guardado");
+        }catch (java.io.IOException e){
+            System.out.println("Erro ao guardar: " + e.getMessage());
+        }
+    }
+
+    public static void carregar(){
+        java.io.File f = new java.io.File(FICHEIRO);
+        if (!f.exists()){
+            return;
+        }
+        try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(
+                new java.io.FileInputStream(FICHEIRO))) {
+            instancia = (Perfil) ois.readObject();
+            System.out.println("Perfil carregado!");
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar: " + e.getMessage());
         }
     }
 }

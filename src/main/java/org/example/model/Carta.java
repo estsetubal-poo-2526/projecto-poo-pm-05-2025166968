@@ -1,6 +1,6 @@
 package org.example.model;
 
-public abstract class Carta {
+public abstract class Carta implements java.io.Serializable{
     protected String nome;
     protected int hp;
     protected int maxHp;

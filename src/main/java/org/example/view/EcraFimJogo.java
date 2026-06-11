@@ -33,6 +33,7 @@ public class EcraFimJogo {
         Button btnVoltar = new Button("Voltar ao Menu");
         btnVoltar.setPrefWidth(200);
         btnVoltar.setOnAction(e -> {
+            Perfil.guardar();
             Lobby lobby = new Lobby(stage);
             lobby.mostrar();
         });
