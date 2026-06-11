@@ -17,10 +17,15 @@ public class EcraAberturaPack {
     private Stage stage;
     private List<Carta> cartas;
     private int cartaAtual = 0;
+    private Lobby lobby;
 
     public EcraAberturaPack(Stage stage, List<Carta> cartas) {
         this.stage = stage;
         this.cartas = cartas;
+    }
+
+    public void setLobby(Lobby lobby){
+        this.lobby = lobby;
     }
 
     public void mostrar() {
@@ -62,8 +67,11 @@ public class EcraAberturaPack {
         } else {
             btnAvancar = new Button("Ir para o Lobby");
             btnAvancar.setOnAction(e -> {
-                Lobby lobby = new Lobby(stage);
-                lobby.mostrar();
+                if (lobby != null) {
+                    lobby.mostrar();
+                } else {
+                    new Lobby(stage).mostrar();
+                }
             });
         }
         btnAvancar.setPrefWidth(200);

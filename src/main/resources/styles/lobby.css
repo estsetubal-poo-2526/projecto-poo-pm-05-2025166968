@@ -1,0 +1,320 @@
+/* ===== CORES BASE ===== */
+.root {
+    -fx-background-color: #1a0a2e;
+    -fx-font-family: "Arial";
+}
+
+/* ===== TEXTOS ===== */
+.titulo {
+    -fx-fill: white;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+.texto-normal {
+    -fx-fill: white;
+    -fx-font-size: 14px;
+}
+
+.texto-moedas {
+    -fx-fill: #f5c842;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+/* ===== TABS ===== */
+.tab-pane {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab-header-area {
+    -fx-background-color: #2a1a4e;
+    -fx-padding: 5 10 0 10;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #2a1a4e;
+    -fx-padding: 10 30 10 30;
+    -fx-background-radius: 8 8 0 0;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #aaaaaa;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #f5c842;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #1a0a2e;
+}
+
+.tab-pane .tab:hover .tab-label {
+    -fx-text-fill: white;
+}
+
+/* ===== CARDS DA COLEÇÃO ===== */
+.card-fogo {
+    -fx-background-color: linear-gradient(to bottom, #ff6b35, #c0392b);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(255,107,53,0.5), 10, 0, 0, 3);
+}
+
+.card-agua {
+    -fx-background-color: linear-gradient(to bottom, #3498db, #1a5276);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.5), 10, 0, 0, 3);
+}
+
+.card-erva {
+    -fx-background-color: linear-gradient(to bottom, #27ae60, #1a5c38);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(39,174,96,0.5), 10, 0, 0, 3);
+}
+
+.card-eletrico {
+    -fx-background-color: linear-gradient(to bottom, #f5c842, #d4a017);
+    -fx-text-fill: #1a0a2e;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(245,200,66,0.5), 10, 0, 0, 3);
+}
+
+.card-gelo {
+    -fx-background-color: linear-gradient(to bottom, #85c1e9, #2e86c1);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(133,193,233,0.5), 10, 0, 0, 3);
+}
+
+.card-voador {
+    -fx-background-color: linear-gradient(to bottom, #a9cce3, #5d6d7e);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(169,204,227,0.5), 10, 0, 0, 3);
+}
+
+.card-normal {
+    -fx-background-color: linear-gradient(to bottom, #aab7b8, #717d7e);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(170,183,184,0.5), 10, 0, 0, 3);
+}
+
+.card-especial {
+    -fx-background-color: linear-gradient(to bottom, #9b59b6, #6c3483);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(155,89,182,0.5), 10, 0, 0, 3);
+}
+
+/* ===== BOTÕES GERAIS ===== */
+.btn-primario {
+    -fx-background-color: #f5c842;
+    -fx-text-fill: #1a0a2e;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 35 12 35;
+    -fx-background-radius: 30;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(245,200,66,0.5), 10, 0, 0, 4);
+}
+
+.btn-primario:hover {
+    -fx-background-color: #e0b030;
+}
+
+.btn-secundario {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-border-color: white;
+    -fx-border-radius: 30;
+    -fx-background-radius: 30;
+    -fx-padding: 10 30 10 30;
+    -fx-cursor: hand;
+}
+
+.btn-secundario:hover {
+    -fx-background-color: rgba(255,255,255,0.1);
+}
+
+.btn-voltar {
+    -fx-background-color: #2a1a4e;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+}
+
+.btn-voltar:hover {
+    -fx-background-color: #3a2a6e;
+}
+
+/* ===== BOTÕES NAVEGAÇÃO LOBBY ===== */
+.btn-nav-colecao {
+    -fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(231,76,60,0.4), 10, 0, 0, 4);
+}
+
+.btn-nav-colecao:hover {
+    -fx-background-color: linear-gradient(to bottom, #c0392b, #a93226);
+}
+
+.btn-nav-baralhos {
+    -fx-background-color: linear-gradient(to bottom, #2980b9, #1a5276);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(41,128,185,0.4), 10, 0, 0, 4);
+}
+
+.btn-nav-baralhos:hover {
+    -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+}
+
+.btn-nav-loja {
+    -fx-background-color: linear-gradient(to bottom, #27ae60, #1e8449);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(39,174,96,0.4), 10, 0, 0, 4);
+}
+
+.btn-nav-loja:hover {
+    -fx-background-color: linear-gradient(to bottom, #1e8449, #196f3d);
+}
+
+/* ===== CAMPO DE JOGO ===== */
+.campo-adversario {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-background-radius: 15;
+    -fx-padding: 10;
+}
+
+.campo-jogador {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-background-radius: 15;
+    -fx-padding: 10;
+}
+
+.espaco-carta {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-text-fill: rgba(255,255,255,0.3);
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(255,255,255,0.2);
+    -fx-border-radius: 10;
+    -fx-border-style: dashed;
+}
+
+.carta-em-campo {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.carta-selecionada {
+    -fx-background-color: #f5c842;
+    -fx-text-fill: #1a0a2e;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(245,200,66,0.8), 15, 0, 0, 0);
+}
+
+/* ===== BOTÕES DO JOGO ===== */
+.btn-passar-turno {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 30 12 30;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(39,174,96,0.5), 10, 0, 0, 3);
+}
+
+.btn-passar-turno:hover {
+    -fx-background-color: #1e8449;
+}
+
+.btn-atacar {
+    -fx-background-color: #f5c842;
+    -fx-text-fill: #1a0a2e;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 30 12 30;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(245,200,66,0.5), 10, 0, 0, 3);
+}
+
+.btn-atacar:hover {
+    -fx-background-color: #e0b030;
+}
+
+.btn-desistir {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 25 10 25;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+}
+
+.btn-desistir:hover {
+    -fx-background-color: #a93226;
+}
+
+/* ===== PLACEHOLDER ===== */
+.placeholder {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-text-fill: rgba(255,255,255,0.3);
+    -fx-border-color: rgba(255,255,255,0.15);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-border-style: dashed;
+}
+
+/* ===== SCROLL PANE ===== */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}

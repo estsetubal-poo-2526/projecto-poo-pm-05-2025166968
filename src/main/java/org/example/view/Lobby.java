@@ -2,178 +2,112 @@ package org.example.view;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.controller.JogoController;
-import org.example.model.Carta;
-import org.example.model.CartaEspecial;
-import org.example.model.GeradorCartas;
 import org.example.model.Perfil;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class Lobby {
     private Stage stage;
-    private int abaAtiva = 0;
 
     public Lobby(Stage stage) {
         this.stage = stage;
     }
 
     public void mostrar() {
-        Text txtTitulo = new Text("Card Arena");
-        txtTitulo.setFont(Font.font(32));
 
-        Text txtMoedasHeader = new Text("Moedas: " + Perfil.getInstancia().getMoedas());
-        txtMoedasHeader.setFont(Font.font(16));
+        // === CANTO SUPERIOR ESQUERDO ===
+        Text txtNome = new Text(Perfil.getInstancia().getNome());
+        txtNome.getStyleClass().add("texto-normal");
 
-        HBox header = new HBox(20);
-        header.setAlignment(Pos.CENTER);
-        header.setPadding(new Insets(20));
-        header.getChildren().addAll(txtTitulo, txtMoedasHeader);
+        Button btnImgBaralho = new Button("[Baralho]");
+        btnImgBaralho.setPrefSize(200, 200);
+        btnImgBaralho.getStyleClass().add("placeholder");
+        btnImgBaralho.setMouseTransparent(true);
 
-        Tab abaColecao = new Tab("Coleção");
-        abaColecao.setClosable(false);
-        FlowPane colecaoLayout = new FlowPane(10, 10);
-        colecaoLayout.setPadding(new Insets(10));
+        VBox topoEsquerdo = new VBox(10);
+        topoEsquerdo.setAlignment(Pos.TOP_LEFT);
+        topoEsquerdo.setPadding(new Insets(20, 20, 20, 20));
 
-        for (Map.Entry<String, Carta> entry : Perfil.getInstancia().getColecao().entrySet()) {
-            Carta carta = entry.getValue();
-            int qtd = Perfil.getInstancia().getQuantidades().get(carta.getNome());
-            String info;
-            if (carta instanceof CartaEspecial) {
-                info = carta.getNome() + "\n[ESPECIAL]\n" + carta.getRaridade() + "\nx" + qtd;
-            } else {
-                info = carta.getNome() + "\n" + carta.getElemento() +
-                        "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() +
-                        "\nDEF:" + carta.getDef() + "\n" + carta.getRaridade() + "\nx" + qtd;
-            }
-            Button btnCarta = new Button(info);
-            btnCarta.setPrefSize(120, 160);
-            colecaoLayout.getChildren().add(btnCarta);
-        }
+        VBox baralhoContainer = new VBox(10);
+        baralhoContainer.setAlignment(Pos.TOP_LEFT);
+        VBox.setMargin(btnImgBaralho, new Insets(100, 100, 100, 100)); // desce o baralho
+        baralhoContainer.getChildren().add(btnImgBaralho);
+        topoEsquerdo.getChildren().addAll(txtNome, btnImgBaralho);
 
-        ScrollPane scrollColecao = new ScrollPane(colecaoLayout);
-        scrollColecao.setFitToWidth(true);
-        abaColecao.setContent(scrollColecao);
+        // === CANTO SUPERIOR DIREITO ===
+        Text txtMoedas = new Text("💰 " + Perfil.getInstancia().getMoedas() + " moedas");
+        txtMoedas.getStyleClass().add("moedas");
 
-        Tab abaBaralhos = new Tab("Baralhos");
-        abaBaralhos.setClosable(false);
-        VBox baralhoLayout = new VBox(5);
-        baralhoLayout.setPadding(new Insets(10));
-        Text txtBaralho = new Text("Baralho (" + Perfil.getInstancia().getBaralhoAtual().size() + "/15)");
-        txtBaralho.setFont(Font.font(16));
-        baralhoLayout.getChildren().add(txtBaralho);
+        VBox topoDireito = new VBox(10);
+        topoDireito.setAlignment(Pos.TOP_RIGHT);
+        topoDireito.setPadding(new Insets(20));
+        topoDireito.getChildren().add(txtMoedas);
 
-        for (int i = 0; i < Perfil.getInstancia().getBaralhoAtual().size(); i++) {
-            Carta carta = Perfil.getInstancia().getBaralhoAtual().get(i);
-            final int index = i;
-            Button btnCarta = new Button(carta.getNome() + " [" + carta.getRaridade() + "]");
-            btnCarta.setPrefWidth(200);
-            btnCarta.setOnAction(e -> {
-                Perfil.getInstancia().removerDoBaralho(index);
-                abaAtiva = 1;
-                mostrar();
-            });
-            baralhoLayout.getChildren().add(btnCarta);
-        }
+        // === CENTRO ===
+        Button btnImgTreinador = new Button("[Treinador]");
+        btnImgTreinador.setPrefSize(150, 200);
+        btnImgTreinador.getStyleClass().add("placeholder");
+        btnImgTreinador.setMouseTransparent(true);
 
-        ScrollPane scrollBaralho = new ScrollPane(baralhoLayout);
-        scrollBaralho.setPrefWidth(250);
-        FlowPane colecaoParaBaralho = new FlowPane(5, 5);
-        colecaoParaBaralho.setPadding(new Insets(10));
-
-        for (Map.Entry<String, Carta> entry : Perfil.getInstancia().getColecao().entrySet()) {
-            Carta carta = entry.getValue();
-            int qtd = Perfil.getInstancia().getQuantidades().get(carta.getNome());
-            Button btnCarta = new Button(carta.getNome() + "\n" + carta.getRaridade() + "\nx" + qtd);
-            btnCarta.setPrefSize(100, 80);
-            btnCarta.setOnAction(e -> {
-                boolean adicionado = Perfil.getInstancia().adicionarAoBaralho(carta);
-                if (adicionado) {
-                    abaAtiva = 1;
-                    mostrar();
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Erro");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Erro. Só podes meter 4 cartas do mesmo tipo em 1 baralho ou o baralho já está cheio!");
-                    alert.showAndWait();
-                }
-            });
-            colecaoParaBaralho.getChildren().add(btnCarta);
-        }
-
-        ScrollPane scrollColecaoBaralho = new ScrollPane(colecaoParaBaralho);
-        HBox baralhoCompleto = new HBox(10);
-        baralhoCompleto.getChildren().addAll(scrollBaralho, scrollColecaoBaralho);
-        abaBaralhos.setContent(baralhoCompleto);
-
-        Tab abaLoja = new Tab("Loja");
-        abaLoja.setClosable(false);
-        Button btnPackBasico = new Button("Pack Básico\n6 cartas\n-50 moedas");
-        btnPackBasico.setPrefSize(150, 100);
-        btnPackBasico.setOnAction(e -> {
-            if (Perfil.getInstancia().getMoedas() >= 50) {
-                Perfil.getInstancia().removerMoedas(50);
-                List<Carta> cartas = new ArrayList<>(GeradorCartas.abrirPack());
-                for (Carta carta : cartas) Perfil.getInstancia().adicionarCarta(carta);
-                EcraAberturaPack ecra = new EcraAberturaPack(stage, cartas);
-                ecra.mostrar();
-            }
-        });
-        Button btnPackRaro = new Button("Pack Raro\n6 cartas\n-100 moedas");
-        btnPackRaro.setPrefSize(150, 100);
-        btnPackRaro.setOnAction(e -> {
-            if (Perfil.getInstancia().getMoedas() >= 100) {
-                Perfil.getInstancia().removerMoedas(100);
-                List<Carta> cartas = new ArrayList<>(GeradorCartas.abrirPack());
-                for (Carta carta : cartas) Perfil.getInstancia().adicionarCarta(carta);
-                EcraAberturaPack ecra = new EcraAberturaPack(stage, cartas);
-                ecra.mostrar();
-            }
-        });
-        Button btnPackEpico = new Button("Pack Épico\n6 cartas\n-200 moedas");
-        btnPackEpico.setPrefSize(150, 100);
-        btnPackEpico.setOnAction(e -> {
-            if (Perfil.getInstancia().getMoedas() >= 200) {
-                Perfil.getInstancia().removerMoedas(200);
-                List<Carta> cartas = new ArrayList<>(GeradorCartas.abrirPack());
-                for (Carta carta : cartas) Perfil.getInstancia().adicionarCarta(carta);
-                EcraAberturaPack ecra = new EcraAberturaPack(stage, cartas);
-                ecra.mostrar();
-            }
-        });
-        HBox packs = new HBox(20);
-        packs.setAlignment(Pos.CENTER);
-        packs.getChildren().addAll(btnPackBasico, btnPackRaro, btnPackEpico);
-        VBox lojaLayout = new VBox(20);
-        lojaLayout.setAlignment(Pos.CENTER);
-        lojaLayout.setPadding(new Insets(20));
-        lojaLayout.getChildren().add(packs);
-        abaLoja.setContent(lojaLayout);
-
-        TabPane tabPane = new TabPane();
-        tabPane.getTabs().addAll(abaColecao, abaBaralhos, abaLoja);
-        tabPane.getSelectionModel().select(abaAtiva);
-        tabPane.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
-            abaAtiva = newVal.intValue();
-        });
-
-        Button btnJogar = new Button("Iniciar Jogo");
-        btnJogar.setOnAction(e -> {
+        Button btnIniciarJogo = new Button("⚔ Iniciar Jogo");
+        btnIniciarJogo.getStyleClass().add("btn-iniciar");
+        btnIniciarJogo.setPrefWidth(200);
+        btnIniciarJogo.setOnAction(e -> {
             JogoController controller = new JogoController(stage);
             controller.iniciarJogo();
         });
 
+        Button btnSair = new Button("Sair");
+        btnSair.getStyleClass().add("btn-sair");
+        btnSair.setPrefWidth(200);
+        btnSair.setOnAction(e -> stage.close());
+
+        VBox centro = new VBox(15);
+        centro.setAlignment(Pos.CENTER);
+        centro.getChildren().addAll(btnImgTreinador, btnIniciarJogo, btnSair);
+
+        // === TOPO ===
+        BorderPane topo = new BorderPane();
+        topo.setLeft(topoEsquerdo);
+        topo.setCenter(centro);
+        topo.setRight(topoDireito);
+        topo.setPrefHeight(400);
+
+        // === PARTE INFERIOR ===
+        Button btnColecao = new Button("Coleção");
+        btnColecao.getStyleClass().add("btn-colecao");
+        btnColecao.setPrefSize(426, 100);
+        btnColecao.setStyle("");
+        btnColecao.setOnAction(e -> new ColecaoView(stage, this).mostrar());
+
+        Button btnBaralhos = new Button("Baralhos");
+        btnBaralhos.getStyleClass().add("btn-baralhos");
+        btnBaralhos.setPrefSize(426, 100);
+        btnBaralhos.setStyle("");
+        btnBaralhos.setOnAction(e -> new BaralhosView(stage, this).mostrar());
+
+        Button btnLoja = new Button("Loja");
+        btnLoja.getStyleClass().add("btn-loja");
+        btnLoja.setPrefSize(428, 100);
+        btnLoja.setStyle("");
+        btnLoja.setOnAction(e -> new LojaView(stage, this).mostrar());
+
+        HBox inferior = new HBox(15);
+        inferior.getStyleClass().add("area-inferior");
+        inferior.setAlignment(Pos.BOTTOM_CENTER);
+        inferior.getChildren().addAll(btnColecao, btnBaralhos, btnLoja);
+
+        // === LAYOUT PRINCIPAL ===
         VBox layout = new VBox(0);
-        layout.getChildren().addAll(header, tabPane, btnJogar);
+        VBox.setVgrow(topo, Priority.ALWAYS);
+        layout.getChildren().addAll(topo, inferior);
 
         Scene scene = new Scene(layout, 1280, 720);
+        scene.getStylesheets().add(getClass().getResource("/styles/lobby.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
