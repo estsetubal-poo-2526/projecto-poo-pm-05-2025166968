@@ -217,18 +217,43 @@ public class SalaJogo {
         botoes.setAlignment(Pos.CENTER);
         botoes.getChildren().addAll(btnPassarTurno, btnDesistir);
 
-        // === LAYOUT PRINCIPAL ===
-        VBox layout = new VBox(12);
-        layout.setAlignment(Pos.CENTER);
-        layout.setPadding(new Insets(15));
-        layout.getChildren().addAll(
+        int cartasBaralhoJogador = controller.getJogo().getJogador(0).getBaralho().getTamanho();
+        int cartasBaralhoPC = controller.getJogo().getJogador(1).getBaralho().getTamanho();
+
+        // === BARALHOS À DIREITA ===
+        Button btnBaralhoPC = new Button("🃏\n" + cartasBaralhoPC);
+        btnBaralhoPC.setPrefSize(70, 100);
+        btnBaralhoPC.getStyleClass().add("espaco-carta");
+        btnBaralhoPC.setMouseTransparent(true);
+
+        Button btnBaralhoJogador = new Button("🃏\n" + cartasBaralhoJogador);
+        btnBaralhoJogador.setPrefSize(70, 100);
+        btnBaralhoJogador.getStyleClass().add("espaco-carta");
+        btnBaralhoJogador.setMouseTransparent(true);
+
+        VBox baralhosLateral = new VBox(20);
+        baralhosLateral.setAlignment(Pos.CENTER);
+        baralhosLateral.setPadding(new Insets(10));
+        baralhosLateral.getChildren().addAll(btnBaralhoPC, btnBaralhoJogador);
+
+        // === CENTRO - Campo ===
+        VBox centro = new VBox(12);
+        centro.setAlignment(Pos.CENTER);
+        centro.getChildren().addAll(
                 txtAdversario, campoAdversario,
                 txtJogador, campoJogador,
                 txtMao, mao,
                 botoes
         );
+        HBox.setHgrow(centro, Priority.ALWAYS);
 
-        Scene scene = new Scene(layout, 1280, 720);
+        // === LAYOUT PRINCIPAL ===
+        HBox layoutPrincipal = new HBox(10);
+        layoutPrincipal.setAlignment(Pos.CENTER);
+        layoutPrincipal.setPadding(new Insets(15));
+        layoutPrincipal.getChildren().addAll(centro, baralhosLateral);
+
+        Scene scene = new Scene(layoutPrincipal, 1280, 720);
         scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
