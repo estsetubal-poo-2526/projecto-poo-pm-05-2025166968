@@ -23,24 +23,26 @@ public class Lobby {
         Text txtNome = new Text(Perfil.getInstancia().getNome());
         txtNome.getStyleClass().add("texto-normal");
 
-        Button btnImgBaralho = new Button("[Baralho]");
-        btnImgBaralho.setPrefSize(200, 200);
+        String nomeBaralhoAtual = Perfil.getInstancia().getBaralhoSelecionado() != null ?
+                Perfil.getInstancia().getBaralhoSelecionado() : "[Baralho]";
+        Button btnImgBaralho = new Button(nomeBaralhoAtual);
+        btnImgBaralho.setPrefSize(200, 260);
         btnImgBaralho.getStyleClass().add("placeholder");
         btnImgBaralho.setMouseTransparent(true);
+
+        VBox baralhoContainer = new VBox(10);
+        baralhoContainer.setAlignment(Pos.TOP_LEFT);
+        VBox.setMargin(btnImgBaralho, new Insets(60, 0, 0, 0));
+        baralhoContainer.getChildren().add(btnImgBaralho);
 
         VBox topoEsquerdo = new VBox(10);
         topoEsquerdo.setAlignment(Pos.TOP_LEFT);
         topoEsquerdo.setPadding(new Insets(20, 20, 20, 20));
-
-        VBox baralhoContainer = new VBox(10);
-        baralhoContainer.setAlignment(Pos.TOP_LEFT);
-        VBox.setMargin(btnImgBaralho, new Insets(100, 100, 100, 100)); // desce o baralho
-        baralhoContainer.getChildren().add(btnImgBaralho);
-        topoEsquerdo.getChildren().addAll(txtNome, btnImgBaralho);
+        topoEsquerdo.getChildren().addAll(txtNome, baralhoContainer);
 
         // === CANTO SUPERIOR DIREITO ===
         Text txtMoedas = new Text("💰 " + Perfil.getInstancia().getMoedas() + " moedas");
-        txtMoedas.getStyleClass().add("moedas");
+        txtMoedas.getStyleClass().add("texto-moedas");
 
         VBox topoDireito = new VBox(10);
         topoDireito.setAlignment(Pos.TOP_RIGHT);
@@ -54,7 +56,7 @@ public class Lobby {
         btnImgTreinador.setMouseTransparent(true);
 
         Button btnIniciarJogo = new Button("⚔ Iniciar Jogo");
-        btnIniciarJogo.getStyleClass().add("btn-iniciar");
+        btnIniciarJogo.getStyleClass().add("btn-primario");
         btnIniciarJogo.setPrefWidth(200);
         btnIniciarJogo.setOnAction(e -> {
             JogoController controller = new JogoController(stage);
@@ -62,7 +64,7 @@ public class Lobby {
         });
 
         Button btnSair = new Button("Sair");
-        btnSair.getStyleClass().add("btn-sair");
+        btnSair.getStyleClass().add("btn-secundario");
         btnSair.setPrefWidth(200);
         btnSair.setOnAction(e -> stage.close());
 
@@ -79,26 +81,23 @@ public class Lobby {
 
         // === PARTE INFERIOR ===
         Button btnColecao = new Button("Coleção");
-        btnColecao.getStyleClass().add("btn-colecao");
-        btnColecao.setPrefSize(426, 100);
-        btnColecao.setStyle("");
+        btnColecao.getStyleClass().add("btn-nav-colecao");
+        btnColecao.setPrefSize(380, 90);
         btnColecao.setOnAction(e -> new ColecaoView(stage, this).mostrar());
 
         Button btnBaralhos = new Button("Baralhos");
-        btnBaralhos.getStyleClass().add("btn-baralhos");
-        btnBaralhos.setPrefSize(426, 100);
-        btnBaralhos.setStyle("");
+        btnBaralhos.getStyleClass().add("btn-nav-baralhos");
+        btnBaralhos.setPrefSize(380, 90);
         btnBaralhos.setOnAction(e -> new BaralhosView(stage, this).mostrar());
 
         Button btnLoja = new Button("Loja");
-        btnLoja.getStyleClass().add("btn-loja");
-        btnLoja.setPrefSize(428, 100);
-        btnLoja.setStyle("");
+        btnLoja.getStyleClass().add("btn-nav-loja");
+        btnLoja.setPrefSize(380, 90);
         btnLoja.setOnAction(e -> new LojaView(stage, this).mostrar());
 
-        HBox inferior = new HBox(15);
-        inferior.getStyleClass().add("area-inferior");
+        HBox inferior = new HBox(20);
         inferior.setAlignment(Pos.BOTTOM_CENTER);
+        inferior.setPadding(new Insets(0, 20, 20, 20));
         inferior.getChildren().addAll(btnColecao, btnBaralhos, btnLoja);
 
         // === LAYOUT PRINCIPAL ===
@@ -107,7 +106,7 @@ public class Lobby {
         layout.getChildren().addAll(topo, inferior);
 
         Scene scene = new Scene(layout, 1280, 720);
-        scene.getStylesheets().add(getClass().getResource("/styles/lobby.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }

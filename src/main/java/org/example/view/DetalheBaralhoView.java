@@ -4,63 +4,76 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.model.Carta;
 import org.example.model.CartaEspecial;
 import org.example.model.Elemento;
 import org.example.model.Perfil;
-import java.util.Map;
+import java.util.List;
 
-public class ColecaoView {
+public class DetalheBaralhoView {
     private Stage stage;
     private Lobby lobby;
+    private String nomeBaralho;
+    private List<Carta> cartas;
 
-    public ColecaoView(Stage stage, Lobby lobby) {
+    public DetalheBaralhoView(Stage stage, Lobby lobby, String nomeBaralho, List<Carta> cartas) {
         this.stage = stage;
         this.lobby = lobby;
+        this.nomeBaralho = nomeBaralho;
+        this.cartas = cartas;
     }
 
     public void mostrar() {
-        Text txtTitulo = new Text("Coleção");
+        Text txtTitulo = new Text(nomeBaralho);
         txtTitulo.getStyleClass().add("titulo");
 
-        FlowPane colecaoLayout = new FlowPane(15, 15);
-        colecaoLayout.setPadding(new Insets(20));
+        Text txtTotal = new Text(cartas.size() + " cartas");
+        txtTotal.getStyleClass().add("texto-normal");
 
-        for (Map.Entry<String, Carta> entry : Perfil.getInstancia().getColecao().entrySet()) {
-            Carta carta = entry.getValue();
-            int qtd = Perfil.getInstancia().getQuantidades().get(carta.getNome());
+        FlowPane cartasLayout = new FlowPane(10, 10);
+        cartasLayout.setPadding(new Insets(10));
+
+        for (Carta carta : cartas) {
             String info;
             if (carta instanceof CartaEspecial) {
-                info = carta.getNome() + "\n[ESPECIAL]\n" + carta.getRaridade() + "\nx" + qtd;
+                info = carta.getNome() + "\n[ESPECIAL]\n" + carta.getRaridade();
             } else {
-                info = carta.getNome() + "\n" + carta.getElemento() +
-                        "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() +
-                        "\nDEF:" + carta.getDef() + "\n" + carta.getRaridade() + "\nx" + qtd;
+                info = carta.getNome() + "\nHP:" + carta.getHp() +
+                        "\nATK:" + carta.getAtk() +
+                        "\nDEF:" + carta.getDef() +
+                        "\n" + carta.getRaridade();
             }
             Button btnCarta = new Button(info);
-            btnCarta.setPrefSize(130, 170);
+            btnCarta.setPrefSize(120, 150);
             btnCarta.getStyleClass().add(getCardStyle(carta));
-            colecaoLayout.getChildren().add(btnCarta);
+            cartasLayout.getChildren().add(btnCarta);
         }
 
-        ScrollPane scroll = new ScrollPane(colecaoLayout);
+        javafx.scene.control.ScrollPane scroll = new javafx.scene.control.ScrollPane(cartasLayout);
         scroll.setFitToWidth(true);
         scroll.getStyleClass().add("scroll-pane");
 
+        Button btnUsar = new Button("✅ Usar este Baralho");
+        btnUsar.getStyleClass().add("btn-primario");
+        btnUsar.setPrefWidth(250);
+        btnUsar.setOnAction(e -> {
+            Perfil.getInstancia().selecionarBaralho(nomeBaralho);
+            lobby.mostrar();
+        });
+
         Button btnVoltar = new Button("← Voltar");
         btnVoltar.getStyleClass().add("btn-voltar");
-        btnVoltar.setOnAction(e -> lobby.mostrar());
+        btnVoltar.setOnAction(e -> new BaralhosView(stage, lobby).mostrar());
 
         VBox layout = new VBox(15);
         layout.setAlignment(Pos.TOP_CENTER);
         layout.setPadding(new Insets(20));
-        layout.getChildren().addAll(txtTitulo, scroll, btnVoltar);
+        javafx.scene.layout.VBox.setVgrow(scroll, javafx.scene.layout.Priority.ALWAYS);
+        layout.getChildren().addAll(txtTitulo, txtTotal, scroll, btnUsar, btnVoltar);
 
         Scene scene = new Scene(layout, 1280, 720);
         scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());

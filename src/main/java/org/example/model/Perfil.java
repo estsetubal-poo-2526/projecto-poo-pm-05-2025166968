@@ -7,9 +7,11 @@ import java.util.Map;
 public class Perfil {
     private static Perfil instancia;
     private String nome;
+    private String baralhoSelecionado;
     private int moedas;
     private Map<String, Carta> colecao;
     private Map<String, Integer> quantidades;
+    private Map<String, List<Carta>> baralhosSalvos;
     private List<Carta> baralhoAtual;
 
     private Perfil(){
@@ -18,7 +20,31 @@ public class Perfil {
         this.colecao = new LinkedHashMap<>();
         this.quantidades = new LinkedHashMap<>();
         this.baralhoAtual = new ArrayList<>();
+        this.baralhosSalvos = new LinkedHashMap<>();
+        this.baralhoSelecionado = null;
         adicionarCartasStarter();
+    }
+
+    public void salvarBaralho(String nome){
+        if (baralhoAtual.isEmpty()){
+            return;
+        }
+        baralhosSalvos.put(nome, new ArrayList<>(baralhoAtual));
+    }
+
+    public void selecionarBaralho(String nome){
+        if (baralhosSalvos.containsKey(nome)){
+            baralhoSelecionado = nome;
+            baralhoAtual = new ArrayList<>(baralhosSalvos.get(nome));
+        }
+    }
+
+    public Map<String, List<Carta>> getBaralhosSalvos(){
+        return baralhosSalvos;
+    }
+
+    public String getBaralhoSelecionado(){
+        return baralhoSelecionado;
     }
 
     public static Perfil getInstancia(){
