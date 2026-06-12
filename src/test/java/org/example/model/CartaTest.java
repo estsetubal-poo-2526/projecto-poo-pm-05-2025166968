@@ -16,18 +16,17 @@ public class CartaTest {
 
     @Test
     void testReceberDanoEmAtaque(){
-        CartaCriatura carta = new CartaCriatura("Pikachu", 45,40,5, Elemento.Eletrico, Raridade.Incomum);
-        carta.mudarPosicao();
-        carta.receberDano(20);
-        assertEquals(30, carta.getHp());
+        CartaCriatura carta = new CartaCriatura("Pikachu", 45, 40, 5, Elemento.Eletrico, Raridade.Incomum);
+        carta.receberDano(20); // sem mudarPosicao - está em ataque
+        assertEquals(25, carta.getHp());
     }
 
     @Test
     void testReceberDanoEmDefesa(){
         CartaCriatura carta = new CartaCriatura("Pikachu", 45, 40, 5, Elemento.Eletrico, Raridade.Incomum);
-        carta.mudarPosicao();
+        carta.mudarPosicao(); // muda para defesa
         carta.receberDano(20);
-        assertEquals(30, carta.getHp());
+        assertEquals(30, carta.getHp()); // 45 - (20 - 5) = 30
     }
 
     @Test

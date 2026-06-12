@@ -28,10 +28,9 @@ public class CampoTest {
 
     @Test
     void testRemoverCarta(){
-        campo.avancarTurno();
-        CartaCriatura carta2 = new CartaCriatura("Squirtle", 60, 20, 20, Elemento.Agua, Raridade.Comum);
-        assertTrue(campo.colocarCriatura(carta, 0));
-        assertTrue(campo.colocarCriatura(carta2, 1));
+        campo.colocarCriatura(carta, 0);
+        campo.removerCriatura(0);
+        assertNull(campo.getEspacosCriatura()[0]);
     }
 
     @Test

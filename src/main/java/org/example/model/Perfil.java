@@ -164,4 +164,8 @@ public class Perfil implements java.io.Serializable{
             System.out.println("Erro ao carregar: " + e.getMessage());
         }
     }
+
+    public static void resetInstancia(){
+        instancia = null;
+    }
 }

@@ -71,11 +71,6 @@ public class Lobby {
         topoDireito.getChildren().add(txtMoedas);
 
         // === CENTRO ===
-        Button btnImgTreinador = new Button("[Treinador]");
-        btnImgTreinador.setPrefSize(150, 200);
-        btnImgTreinador.getStyleClass().add("placeholder");
-        btnImgTreinador.setMouseTransparent(true);
-
         Button btnIniciarJogo = new Button("⚔ Iniciar Jogo");
         btnIniciarJogo.getStyleClass().add("btn-primario");
         btnIniciarJogo.setPrefWidth(220);
@@ -100,9 +95,24 @@ public class Lobby {
             stage.close();
         });
 
+        // Imagem do treinador
         VBox centro = new VBox(15);
         centro.setAlignment(Pos.CENTER);
-        centro.getChildren().addAll(btnImgTreinador, btnIniciarJogo, btnSair);
+
+        try {
+            Image imgTreinador = new Image(getClass().getResourceAsStream("/images/ashe.png"));
+            ImageView ivTreinador = new ImageView(imgTreinador);
+            ivTreinador.setFitWidth(150);
+            ivTreinador.setFitHeight(200);
+            ivTreinador.setPreserveRatio(true);
+            centro.getChildren().addAll(ivTreinador, btnIniciarJogo, btnSair);
+        } catch (Exception e) {
+            Button btnPlaceholder = new Button("[Treinador]");
+            btnPlaceholder.setPrefSize(150, 200);
+            btnPlaceholder.getStyleClass().add("placeholder");
+            btnPlaceholder.setMouseTransparent(true);
+            centro.getChildren().addAll(btnPlaceholder, btnIniciarJogo, btnSair);
+        }
 
         // === TOPO ===
         BorderPane topo = new BorderPane();
