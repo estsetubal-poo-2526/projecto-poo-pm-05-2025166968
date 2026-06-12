@@ -45,10 +45,15 @@ public class GeradorCartas {
         for (int i = 0; i < 6; i++) {
             // 10% de chance de ser carta especial
             if (random.nextInt(10) == 0) {
-                if (random.nextBoolean()) {
-                    pack.add(new Pocao("Poção Pequena", Raridade.Comum, 20));
-                } else {
-                    pack.add(new Treinador("Treinador Básico", Raridade.Comum, 10, 0));
+                if (random.nextInt(10) == 0) {
+                    int tipo = random.nextInt(3);
+                    if (tipo == 0) {
+                        pack.add(new Pocao("pocaoPequena", Raridade.Comum, 20));
+                    } else if (tipo == 1) {
+                        pack.add(new Pocao("pocaoMedia", Raridade.Incomum, 40));
+                    } else {
+                        pack.add(new Treinador("treinador", Raridade.Comum, 10, 0));
+                    }
                 }
             } else {
                 Raridade raridade = sortearRaridade();
