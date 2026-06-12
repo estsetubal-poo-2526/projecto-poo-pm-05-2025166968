@@ -3,6 +3,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -21,6 +24,74 @@ public class SalaJogo {
         this.controller = controller;
     }
 
+    private ImageView getImagem(String nome, int width, int height) {
+        try {
+            String caminho = "/images/" + nome.toLowerCase() + ".png";
+            Image img = new Image(getClass().getResourceAsStream(caminho));
+            ImageView iv = new ImageView(img);
+            iv.setFitWidth(width);
+            iv.setFitHeight(height);
+            iv.setPreserveRatio(true);
+            return iv;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private String getCorElemento(Elemento e) {
+        return switch (e) {
+            case Fogo -> "#c0392b";
+            case Agua -> "#2980b9";
+            case Erva -> "#27ae60";
+            case Eletrico -> "#d4a017";
+            case Gelo -> "#85c1e9";
+            case Voador -> "#5d6d7e";
+            case Normal -> "#717d7e";
+        };
+    }
+
+    private VBox criarCartaCriatura(CartaCriatura carta, Runnable onClick, Runnable onRightClick, boolean selecionada) {
+        VBox cardBox = new VBox(3);
+        cardBox.setAlignment(Pos.CENTER);
+        cardBox.setPrefSize(100, 140);
+        cardBox.setPadding(new Insets(4));
+
+        String cor = selecionada ? "#f5c842" : getCorElemento(carta.getElemento());
+        cardBox.setStyle("-fx-background-color: " + cor + "; -fx-background-radius: 10; -fx-cursor: hand;");
+
+        ImageView iv = getImagem(carta.getNome(), 60, 60);
+        if (iv != null) cardBox.getChildren().add(iv);
+
+        String posicaoTexto = carta.getPosicao() == Posicao.Ataque ? "⚔" : "🛡";
+        Text txtNome = new Text(carta.getNome());
+        txtNome.setStyle("-fx-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;");
+        Text txtPosicao = new Text(posicaoTexto + " HP:" + carta.getHp());
+        txtPosicao.setStyle("-fx-fill: white; -fx-font-size: 9px;");
+        Text txtStats = new Text("ATK:" + carta.getAtk() + " DEF:" + carta.getDef());
+        txtStats.setStyle("-fx-fill: rgba(255,255,255,0.8); -fx-font-size: 9px;");
+
+        cardBox.getChildren().addAll(txtNome, txtPosicao, txtStats);
+
+        if (carta.getPosicao() == Posicao.Defesa) cardBox.setRotate(90);
+
+        if (onClick != null) {
+            cardBox.setOnMouseClicked(e -> {
+                if (e.getButton() == MouseButton.PRIMARY) onClick.run();
+                else if (e.getButton() == MouseButton.SECONDARY && onRightClick != null) onRightClick.run();
+            });
+        }
+
+        return cardBox;
+    }
+
+    private VBox criarEspacoVazio() {
+        VBox espaco = new VBox();
+        espaco.setPrefSize(100, 140);
+        espaco.setStyle("-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 10; " +
+                "-fx-border-color: rgba(255,255,255,0.15); -fx-border-radius: 10; -fx-border-style: dashed;");
+        return espaco;
+    }
+
     public void mostrar() {
 
         // === CAMPO ADVERSÁRIO ===
@@ -33,17 +104,7 @@ public class SalaJogo {
         for (int i = 0; i < 5; i++) {
             final int indexAlvo = i;
             if (espacosPC[i] != null) {
-                Button espaco = new Button(espacosPC[i].getNome() +
-                        "\nHP:" + espacosPC[i].getHp() +
-                        "\nATK:" + espacosPC[i].getAtk() +
-                        "\nDEF:" + espacosPC[i].getDef());
-                espaco.setPrefSize(100, 130);
-                espaco.getStyleClass().add(getCardStyle(espacosPC[i]));
-                // rotação horizontal se estiver em defesa
-                if (espacosPC[i].getPosicao() == Posicao.Defesa) {
-                    espaco.setRotate(90);
-                }
-                espaco.setOnAction(e -> {
+                VBox card = criarCartaCriatura(espacosPC[i], () -> {
                     if (cartaSelecionada != -1 && !jaAtacou) {
                         boolean atacou = controller.atacar(cartaSelecionada, indexAlvo);
                         if (atacou) {
@@ -59,13 +120,10 @@ public class SalaJogo {
                         }
                         atualizar();
                     }
-                });
-                criaturaAdversario.getChildren().add(espaco);
+                }, null, false);
+                criaturaAdversario.getChildren().add(card);
             } else {
-                Button espaco = new Button("[ ]");
-                espaco.setPrefSize(100, 130);
-                espaco.getStyleClass().add("espaco-carta");
-                criaturaAdversario.getChildren().add(espaco);
+                criaturaAdversario.getChildren().add(criarEspacoVazio());
             }
         }
 
@@ -102,35 +160,16 @@ public class SalaJogo {
         for (int i = 0; i < 5; i++) {
             final int indexCarta = i;
             if (espacos[i] != null) {
-                String posicaoTexto = espacos[i].getPosicao() == Posicao.Ataque ? "⚔ ATK" : "🛡 DEF";
-                Button espaco = new Button(espacos[i].getNome() + "\n" + posicaoTexto +
-                        "\nHP:" + espacos[i].getHp() +
-                        "\nATK:" + espacos[i].getAtk() +
-                        "\nDEF:" + espacos[i].getDef());
-                espaco.setPrefSize(100, 130);
-                // rotação horizontal se estiver em defesa
-                if (espacos[i].getPosicao() == Posicao.Defesa) {
-                    espaco.setRotate(90);
-                }
-                if (cartaSelecionada == i) {
-                    espaco.getStyleClass().add("carta-selecionada");
-                } else {
-                    espaco.getStyleClass().add(getCardStyle(espacos[i]));
-                }
-                espaco.setOnAction(e -> {
+                VBox card = criarCartaCriatura(espacos[i], () -> {
                     cartaSelecionada = indexCarta;
                     atualizar();
-                });
-                espaco.setOnContextMenuRequested(e -> {
+                }, () -> {
                     espacos[indexCarta].mudarPosicao();
                     atualizar();
-                });
-                criaturaJogador.getChildren().add(espaco);
+                }, cartaSelecionada == i);
+                criaturaJogador.getChildren().add(card);
             } else {
-                Button espaco = new Button("[ ]");
-                espaco.setPrefSize(100, 130);
-                espaco.getStyleClass().add("espaco-carta");
-                criaturaJogador.getChildren().add(espaco);
+                criaturaJogador.getChildren().add(criarEspacoVazio());
             }
         }
 
@@ -144,9 +183,7 @@ public class SalaJogo {
                 Button espaco = new Button(especiaisJog[i].getNome());
                 espaco.setPrefSize(80, 60);
                 espaco.getStyleClass().add("card-especial");
-                espaco.setOnAction(e -> {
-                    new EcraUsarEspecial(stage, controller, indexEspecial, especiaisJog[indexEspecial]).mostrar();
-                });
+                espaco.setOnAction(e -> new EcraUsarEspecial(stage, controller, indexEspecial, especiaisJog[indexEspecial]).mostrar());
                 especiaisJogador.getChildren().add(espaco);
             } else {
                 Button espaco = new Button("[ESP]");
@@ -171,17 +208,41 @@ public class SalaJogo {
         for (int i = 0; i < cartasMao.size(); i++) {
             Carta carta = cartasMao.get(i);
             final int indexMao = i;
-            Button btnCarta;
+
+            VBox cardBox = new VBox(3);
+            cardBox.setAlignment(Pos.CENTER);
+            cardBox.setPrefSize(100, 140);
+            cardBox.setPadding(new Insets(4));
+
             if (carta instanceof CartaEspecial) {
-                btnCarta = new Button(carta.getNome() + "\n[ESPECIAL]\n" + carta.getRaridade());
-                btnCarta.getStyleClass().add("card-especial");
+                cardBox.setStyle("-fx-background-color: #8e44ad; -fx-background-radius: 10; -fx-cursor: hand;");
+                ImageView iv = getImagem(carta.getNome(), 60, 60);
+                if (iv != null) {
+                    cardBox.getChildren().add(iv);
+                } else {
+                    Text emoji = new Text(carta instanceof Pocao ? "🧪" : "👤");
+                    emoji.setStyle("-fx-font-size: 30px;");
+                    cardBox.getChildren().add(emoji);
+                }
+                Text txtNome = new Text(carta.getNome());
+                txtNome.setStyle("-fx-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;");
+                Text txtTipo = new Text("[ESPECIAL]");
+                txtTipo.setStyle("-fx-fill: rgba(255,255,255,0.8); -fx-font-size: 9px;");
+                cardBox.getChildren().addAll(txtNome, txtTipo);
             } else {
-                btnCarta = new Button(carta.getNome() + "\nHP:" + carta.getHp() +
-                        "\nATK:" + carta.getAtk() + "\nDEF:" + carta.getDef());
-                btnCarta.getStyleClass().add(getCardStyle(carta));
+                CartaCriatura criatura = (CartaCriatura) carta;
+                cardBox.setStyle("-fx-background-color: " + getCorElemento(criatura.getElemento()) +
+                        "; -fx-background-radius: 10; -fx-cursor: hand;");
+                ImageView iv = getImagem(carta.getNome(), 60, 60);
+                if (iv != null) cardBox.getChildren().add(iv);
+                Text txtNome = new Text(carta.getNome());
+                txtNome.setStyle("-fx-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;");
+                Text txtStats = new Text("HP:" + carta.getHp() + " ATK:" + criatura.getAtk());
+                txtStats.setStyle("-fx-fill: rgba(255,255,255,0.8); -fx-font-size: 9px;");
+                cardBox.getChildren().addAll(txtNome, txtStats);
             }
-            btnCarta.setPrefSize(100, 130);
-            btnCarta.setOnAction(e -> {
+
+            cardBox.setOnMouseClicked(e -> {
                 Campo campo = controller.getJogo().getJogador(0).getCampo();
                 if (carta instanceof CartaEspecial) {
                     for (int j = 0; j < 2; j++) {
@@ -201,7 +262,7 @@ public class SalaJogo {
                     }
                 }
             });
-            mao.getChildren().add(btnCarta);
+            mao.getChildren().add(cardBox);
         }
 
         // === BOTÕES ===
@@ -216,8 +277,7 @@ public class SalaJogo {
         btnDesistir.getStyleClass().add("btn-desistir");
         btnDesistir.setOnAction(e -> {
             Perfil.guardar();
-            Lobby lobby = new Lobby(stage);
-            lobby.mostrar();
+            new Lobby(stage).mostrar();
         });
 
         HBox botoes = new HBox(20);
@@ -246,12 +306,7 @@ public class SalaJogo {
         // === CENTRO ===
         VBox centro = new VBox(12);
         centro.setAlignment(Pos.CENTER);
-        centro.getChildren().addAll(
-                txtAdversario, campoAdversario,
-                txtJogador, campoJogador,
-                txtMao, mao,
-                botoes
-        );
+        centro.getChildren().addAll(txtAdversario, campoAdversario, txtJogador, campoJogador, txtMao, mao, botoes);
         HBox.setHgrow(centro, Priority.ALWAYS);
 
         // === LAYOUT PRINCIPAL ===
@@ -266,20 +321,5 @@ public class SalaJogo {
         stage.show();
     }
 
-    private String getCardStyle(Carta carta) {
-        if (carta instanceof CartaEspecial) return "card-especial";
-        return switch (carta.getElemento()) {
-            case Fogo -> "card-fogo";
-            case Agua -> "card-agua";
-            case Erva -> "card-erva";
-            case Eletrico -> "card-eletrico";
-            case Gelo -> "card-gelo";
-            case Voador -> "card-voador";
-            default -> "card-normal";
-        };
-    }
-
-    public void atualizar() {
-        mostrar();
-    }
+    public void atualizar() { mostrar(); }
 }

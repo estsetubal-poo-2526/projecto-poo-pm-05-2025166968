@@ -4,11 +4,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.model.Carta;
 import org.example.model.CartaEspecial;
+import org.example.model.Pocao;
 import java.util.List;
 
 public class EcraAberturaPack {
@@ -27,40 +30,35 @@ public class EcraAberturaPack {
         this.lobby = lobby;
     }
 
+    private ImageView getImagem(String nome, int width, int height) {
+        try {
+            String caminho = "/images/" + nome.toLowerCase() + ".png";
+            Image img = new Image(getClass().getResourceAsStream(caminho));
+            ImageView iv = new ImageView(img);
+            iv.setFitWidth(width);
+            iv.setFitHeight(height);
+            iv.setPreserveRatio(true);
+            return iv;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public void mostrar() {
         mostrarCarta(cartaAtual);
     }
 
     private void mostrarCarta(int index) {
-        // Contador
         Text txtContador = new Text("Carta " + (index + 1) + " / " + cartas.size());
         txtContador.setStyle("-fx-fill: rgba(255,255,255,0.5); -fx-font-size: 16px;");
 
-        // Título
         Text txtTitulo = new Text("✨ Abertura de Pack ✨");
         txtTitulo.setStyle("-fx-fill: #f5c842; -fx-font-size: 32px; -fx-font-weight: bold; " +
                 "-fx-effect: dropshadow(gaussian, rgba(245,200,66,0.6), 15, 0, 0, 0);");
 
-        // Carta atual
         Carta carta = cartas.get(index);
-        String info;
-        String raridade = carta.getRaridade().toString();
 
-        if (carta instanceof CartaEspecial) {
-            info = carta.getNome() + "\n\n[ESPECIAL]\n\n" + raridade;
-        } else {
-            info = carta.getNome() + "\n\n" + carta.getElemento() +
-                    "\nHP: " + carta.getHp() +
-                    "\nATK: " + carta.getAtk() +
-                    "\nDEF: " + carta.getDef() +
-                    "\n\n" + raridade;
-        }
-
-        Button btnCarta = new Button(info);
-        btnCarta.setPrefSize(220, 300);
-        btnCarta.setMouseTransparent(true);
-
-        // cor da carta baseada na raridade
+        // cor baseada na raridade
         String corRaridade = switch (carta.getRaridade()) {
             case Comum -> "#aab7b8";
             case Incomum -> "#27ae60";
@@ -68,11 +66,41 @@ public class EcraAberturaPack {
             case Epico -> "#8e44ad";
             case Lendario -> "#f5c842";
         };
-        btnCarta.setStyle("-fx-background-color: " + corRaridade + "; -fx-text-fill: white; " +
-                "-fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 15; " +
+
+        // card com imagem
+        VBox cardBox = new VBox(8);
+        cardBox.setAlignment(Pos.CENTER);
+        cardBox.setPrefSize(220, 300);
+        cardBox.setPadding(new Insets(15));
+        cardBox.setStyle("-fx-background-color: " + corRaridade + "; -fx-background-radius: 15; " +
                 "-fx-effect: dropshadow(gaussian, " + corRaridade + ", 25, 0, 0, 0);");
 
-        // Botão avançar
+        ImageView iv = getImagem(carta.getNome(), 130, 130);
+        if (iv != null) {
+            cardBox.getChildren().add(iv);
+        } else {
+            Text emoji = new Text(carta instanceof Pocao ? "🧪" : carta instanceof CartaEspecial ? "👤" : "❓");
+            emoji.setStyle("-fx-font-size: 60px;");
+            cardBox.getChildren().add(emoji);
+        }
+
+        Text txtNome = new Text(carta.getNome());
+        txtNome.setStyle("-fx-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+
+        Text txtRaridade = new Text("⭐ " + carta.getRaridade());
+        txtRaridade.setStyle("-fx-fill: white; -fx-font-size: 13px;");
+
+        String info;
+        if (carta instanceof CartaEspecial) {
+            info = "[ESPECIAL]";
+        } else {
+            info = "HP:" + carta.getHp() + "  ATK:" + carta.getAtk() + "  DEF:" + carta.getDef();
+        }
+        Text txtStats = new Text(info);
+        txtStats.setStyle("-fx-fill: rgba(255,255,255,0.85); -fx-font-size: 12px;");
+
+        cardBox.getChildren().addAll(txtNome, txtRaridade, txtStats);
+
         Button btnAvancar;
         if (index < cartas.size() - 1) {
             btnAvancar = new Button("Próxima Carta →");
@@ -82,11 +110,8 @@ public class EcraAberturaPack {
             btnAvancar = new Button("🏆 Ver Coleção");
             btnAvancar.getStyleClass().add("btn-primario");
             btnAvancar.setOnAction(e -> {
-                if (lobby != null) {
-                    lobby.mostrar();
-                } else {
-                    new Lobby(stage).mostrar();
-                }
+                if (lobby != null) lobby.mostrar();
+                else new Lobby(stage).mostrar();
             });
         }
         btnAvancar.setPrefWidth(220);
@@ -94,7 +119,7 @@ public class EcraAberturaPack {
         VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(40));
-        layout.getChildren().addAll(txtTitulo, txtContador, btnCarta, btnAvancar);
+        layout.getChildren().addAll(txtTitulo, txtContador, cardBox, btnAvancar);
 
         Scene scene = new Scene(layout, 1280, 720);
         scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());

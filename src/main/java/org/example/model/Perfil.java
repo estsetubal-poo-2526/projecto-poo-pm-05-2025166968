@@ -59,9 +59,9 @@ public class Perfil implements java.io.Serializable{
         for (Carta carta : GeradorCartas.criarBaralhoTeste().getCartas()){
             adicionarCarta(carta);
         }
-        adicionarCarta(new Pocao("Poção Pequena", Raridade.Comum, 20));
-        adicionarCarta(new Pocao("Poção Média", Raridade.Incomum, 40));
-        adicionarCarta(new Treinador("Treinador Básico", Raridade.Comum, 10, 0));
+        adicionarCarta(new Pocao("pocaoPequena", Raridade.Comum, 20));
+        adicionarCarta(new Pocao("pocaoMedia", Raridade.Incomum, 40));
+        adicionarCarta(new Treinador("treinador", Raridade.Comum, 10, 0));
     }
 
     public void adicionarMoedas(int quantidade){

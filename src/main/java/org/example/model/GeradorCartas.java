@@ -34,9 +34,9 @@ public class GeradorCartas {
         for (CartaCriatura carta : todasAsCartas) {
             baralho.adicionarCarta(new CartaCriatura(carta.getNome(), carta.getHp(), carta.atk, carta.getDef(), carta.getElemento(), carta.getRaridade()));
         }
-        baralho.adicionarCarta(new Pocao("Poção Pequena", Raridade.Comum, 20));
-        baralho.adicionarCarta(new Pocao("Poção Média", Raridade.Incomum, 40));
-        baralho.adicionarCarta(new Treinador("Treinador Básico", Raridade.Comum, 10, 0));
+        baralho.adicionarCarta(new Pocao("pocaoPequena", Raridade.Comum, 20));
+        baralho.adicionarCarta(new Pocao("pocaoMedia", Raridade.Incomum, 40));
+        baralho.adicionarCarta(new Treinador("treinador", Raridade.Comum, 10, 0));
         return baralho;
     }
 

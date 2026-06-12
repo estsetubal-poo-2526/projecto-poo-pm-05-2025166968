@@ -5,9 +5,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.model.*;
@@ -22,6 +22,20 @@ public class ColecaoView {
         this.lobby = lobby;
     }
 
+    private ImageView getImagem(String nome, int width, int height) {
+        try {
+            String caminho = "/images/" + nome.toLowerCase() + ".png";
+            Image img = new Image(getClass().getResourceAsStream(caminho));
+            ImageView iv = new ImageView(img);
+            iv.setFitWidth(width);
+            iv.setFitHeight(height);
+            iv.setPreserveRatio(true);
+            return iv;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public void mostrar() {
         Text txtTitulo = new Text("Coleção");
         txtTitulo.getStyleClass().add("titulo");
@@ -29,42 +43,47 @@ public class ColecaoView {
         FlowPane colecaoLayout = new FlowPane(15, 15);
         colecaoLayout.setPadding(new Insets(10));
 
-        // ordena por elemento e depois por raridade
         List<Carta> cartasOrdenadas = new ArrayList<>(Perfil.getInstancia().getColecao().values());
         cartasOrdenadas.sort((a, b) -> {
-            // especiais primeiro
             if (a instanceof CartaEspecial && !(b instanceof CartaEspecial)) return -1;
             if (!(a instanceof CartaEspecial) && b instanceof CartaEspecial) return 1;
-            // ordena por elemento
             int elemComp = a.getElemento().toString().compareTo(b.getElemento().toString());
             if (elemComp != 0) return elemComp;
-            // ordena por raridade
             return getRaridadeOrdem(a.getRaridade()) - getRaridadeOrdem(b.getRaridade());
         });
 
-        Elemento elemAtual = null;
         for (Carta carta : cartasOrdenadas) {
-            // cabeçalho de elemento
-            if (!(carta instanceof CartaEspecial) && !carta.getElemento().equals(elemAtual)) {
-                elemAtual = carta.getElemento();
-                Text txtElem = new Text("── " + elemAtual + " ──");
-                txtElem.setStyle("-fx-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-                colecaoLayout.getChildren().add(txtElem);
+            int qtd = Perfil.getInstancia().getQuantidades().get(carta.getNome());
+
+            VBox cardBox = new VBox(4);
+            cardBox.setAlignment(Pos.CENTER);
+            cardBox.setPrefSize(120, 180);
+            cardBox.setPadding(new Insets(6));
+
+            String cor = getCorElemento(carta);
+            cardBox.setStyle("-fx-background-color: " + cor + "; -fx-background-radius: 12; " +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 3);");
+
+            ImageView iv = getImagem(carta.getNome(), 70, 70);
+            if (iv != null) {
+                cardBox.getChildren().add(iv);
+            } else {
+                Text emoji = new Text(carta instanceof CartaEspecial ? "🧪" : "❓");
+                emoji.setStyle("-fx-font-size: 30px;");
+                cardBox.getChildren().add(emoji);
             }
 
-            int qtd = Perfil.getInstancia().getQuantidades().get(carta.getNome());
-            String info;
-            if (carta instanceof CartaEspecial) {
-                info = carta.getNome() + "\n[ESPECIAL]\n" + carta.getRaridade() + "\nx" + qtd;
-            } else {
-                info = carta.getNome() + "\n" + carta.getElemento() +
-                        "\nHP:" + carta.getHp() + "\nATK:" + carta.getAtk() +
-                        "\nDEF:" + carta.getDef() + "\n" + carta.getRaridade() + "\nx" + qtd;
-            }
-            Button btnCarta = new Button(info);
-            btnCarta.setPrefSize(130, 170);
-            btnCarta.getStyleClass().add(getCardStyle(carta));
-            colecaoLayout.getChildren().add(btnCarta);
+            Text txtNome = new Text(carta.getNome());
+            txtNome.setStyle("-fx-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;");
+
+            Text txtRar = new Text(carta.getRaridade().toString());
+            txtRar.setStyle("-fx-fill: rgba(255,255,255,0.8); -fx-font-size: 9px;");
+
+            Text txtQtd = new Text("x" + qtd);
+            txtQtd.setStyle("-fx-fill: #f5c842; -fx-font-size: 11px; -fx-font-weight: bold;");
+
+            cardBox.getChildren().addAll(txtNome, txtRar, txtQtd);
+            colecaoLayout.getChildren().add(cardBox);
         }
 
         ScrollPane scroll = new ScrollPane(colecaoLayout);
@@ -87,6 +106,19 @@ public class ColecaoView {
         stage.show();
     }
 
+    private String getCorElemento(Carta carta) {
+        if (carta instanceof CartaEspecial) return "#8e44ad";
+        return switch (carta.getElemento()) {
+            case Fogo -> "#c0392b";
+            case Agua -> "#2980b9";
+            case Erva -> "#27ae60";
+            case Eletrico -> "#d4a017";
+            case Gelo -> "#85c1e9";
+            case Voador -> "#5d6d7e";
+            default -> "#717d7e";
+        };
+    }
+
     private int getRaridadeOrdem(Raridade r) {
         return switch (r) {
             case Comum -> 0;
@@ -94,19 +126,6 @@ public class ColecaoView {
             case Raro -> 2;
             case Epico -> 3;
             case Lendario -> 4;
-        };
-    }
-
-    private String getCardStyle(Carta carta) {
-        if (carta instanceof CartaEspecial) return "card-especial";
-        return switch (carta.getElemento()) {
-            case Fogo -> "card-fogo";
-            case Agua -> "card-agua";
-            case Erva -> "card-erva";
-            case Eletrico -> "card-eletrico";
-            case Gelo -> "card-gelo";
-            case Voador -> "card-voador";
-            default -> "card-normal";
         };
     }
 }
