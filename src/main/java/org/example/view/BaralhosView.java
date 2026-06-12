@@ -36,6 +36,19 @@ public class BaralhosView {
         }
     }
 
+    private ImageView getImagemBaralho() {
+        try {
+            Image img = new Image(getClass().getResourceAsStream("/images/baralho.png"));
+            ImageView iv = new ImageView(img);
+            iv.setFitWidth(80);
+            iv.setFitHeight(80);
+            iv.setPreserveRatio(true);
+            return iv;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     private String getCorElemento(Carta carta) {
         if (carta instanceof CartaEspecial) return "#8e44ad";
         return switch (carta.getElemento()) {
@@ -188,16 +201,16 @@ public class BaralhosView {
 
             VBox cardBaralho = new VBox(8);
             cardBaralho.setAlignment(Pos.CENTER);
-            cardBaralho.setPrefSize(130, 160);
+            cardBaralho.setPrefSize(130, 170);
             cardBaralho.setPadding(new Insets(10));
             cardBaralho.setStyle(selecionado ?
-                    "-fx-background-color: #f5c842; -fx-background-radius: 12; -fx-cursor: hand;" :
-                    "-fx-background-color: #2a1a4e; -fx-background-radius: 12; -fx-cursor: hand;");
+                    "-fx-background-color: #f5c842; -fx-background-radius: 12; -fx-cursor: hand; " +
+                            "-fx-effect: dropshadow(gaussian, rgba(245,200,66,0.6), 15, 0, 0, 0);" :
+                    "-fx-background-color: #2a1a4e; -fx-background-radius: 12; -fx-cursor: hand; " +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 3);");
 
-            Button imgBaralho = new Button("[Baralho]");
-            imgBaralho.setPrefSize(80, 80);
-            imgBaralho.getStyleClass().add("placeholder");
-            imgBaralho.setMouseTransparent(true);
+            // imagem do baralho
+            ImageView ivBaralho = getImagemBaralho();
 
             Text txtNome = new Text(nomeBaralho);
             txtNome.setStyle(selecionado ?
@@ -209,7 +222,16 @@ public class BaralhosView {
                     "-fx-fill: #1a0a2e; -fx-font-size: 11px;" :
                     "-fx-fill: rgba(255,255,255,0.7); -fx-font-size: 11px;");
 
-            cardBaralho.getChildren().addAll(imgBaralho, txtNome, txtQtd);
+            if (ivBaralho != null) {
+                cardBaralho.getChildren().addAll(ivBaralho, txtNome, txtQtd);
+            } else {
+                Button imgBaralhoBtn = new Button("[Baralho]");
+                imgBaralhoBtn.setPrefSize(80, 80);
+                imgBaralhoBtn.getStyleClass().add("placeholder");
+                imgBaralhoBtn.setMouseTransparent(true);
+                cardBaralho.getChildren().addAll(imgBaralhoBtn, txtNome, txtQtd);
+            }
+
             cardBaralho.setOnMouseClicked(e ->
                     new DetalheBaralhoView(stage, lobby, nomeBaralho, cartas).mostrar());
             baralhosSalvosLayout.getChildren().add(cardBaralho);

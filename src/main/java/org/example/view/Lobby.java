@@ -4,6 +4,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -26,15 +28,33 @@ public class Lobby {
         String nomeBaralhoAtual = Perfil.getInstancia().getBaralhoSelecionado() != null ?
                 Perfil.getInstancia().getBaralhoSelecionado() : "Sem baralho";
 
-        Button btnImgBaralho = new Button(nomeBaralhoAtual);
-        btnImgBaralho.setPrefSize(200, 260);
-        btnImgBaralho.getStyleClass().add("placeholder");
-        btnImgBaralho.setMouseTransparent(true);
+        VBox baralhoBox = new VBox(8);
+        baralhoBox.setAlignment(Pos.TOP_LEFT);
+        baralhoBox.setPrefSize(200, 260);
+
+        try {
+            Image imgBaralho = new Image(getClass().getResourceAsStream("/images/baralho.png"));
+            ImageView ivBaralho = new ImageView(imgBaralho);
+            ivBaralho.setFitWidth(180);
+            ivBaralho.setFitHeight(220);
+            ivBaralho.setPreserveRatio(true);
+            baralhoBox.getChildren().add(ivBaralho);
+        } catch (Exception e) {
+            Button placeholder = new Button(nomeBaralhoAtual);
+            placeholder.setPrefSize(180, 220);
+            placeholder.getStyleClass().add("placeholder");
+            placeholder.setMouseTransparent(true);
+            baralhoBox.getChildren().add(placeholder);
+        }
+
+        Text txtNomeBaralho = new Text(nomeBaralhoAtual);
+        txtNomeBaralho.setStyle("-fx-fill: #f5c842; -fx-font-size: 12px; -fx-font-weight: bold;");
+        baralhoBox.getChildren().add(txtNomeBaralho);
 
         VBox baralhoContainer = new VBox(10);
         baralhoContainer.setAlignment(Pos.TOP_LEFT);
-        VBox.setMargin(btnImgBaralho, new Insets(60, 0, 0, 0));
-        baralhoContainer.getChildren().add(btnImgBaralho);
+        VBox.setMargin(baralhoBox, new Insets(60, 0, 0, 0));
+        baralhoContainer.getChildren().add(baralhoBox);
 
         VBox topoEsquerdo = new VBox(10);
         topoEsquerdo.setAlignment(Pos.TOP_LEFT);

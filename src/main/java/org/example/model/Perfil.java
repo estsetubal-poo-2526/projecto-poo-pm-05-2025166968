@@ -141,11 +141,12 @@ public class Perfil implements java.io.Serializable{
 
     public static final String FICHEIRO = "perfil.dat";
 
-    public static void guardar(){
-        try (java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(new java.io.FileOutputStream(FICHEIRO))){
+    public static void guardar() {
+        try (java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(
+                new java.io.FileOutputStream(FICHEIRO))) {
             oos.writeObject(instancia);
-            System.out.println("Perfil Guardado");
-        }catch (java.io.IOException e){
+            System.out.println("Perfil guardado em: " + new java.io.File(FICHEIRO).getAbsolutePath());
+        } catch (java.io.IOException e) {
             System.out.println("Erro ao guardar: " + e.getMessage());
         }
     }
