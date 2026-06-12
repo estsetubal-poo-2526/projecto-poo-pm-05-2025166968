@@ -74,7 +74,6 @@ public class JogoController {
 
         jogadaPC();
 
-        // escolhe melhor atacante
         CartaCriatura melhorAtacante = null;
         for (int i = 0; i < 5; i++) {
             if (campoPC[i] != null && campoPC[i].podeAtacar(jogo.getJogador(1).getCampo().getTurnoAtual())) {
@@ -85,7 +84,6 @@ public class JogoController {
         }
 
         if (melhorAtacante != null) {
-            // escolhe melhor alvo
             CartaCriatura melhorAlvo = null;
             int indexMelhorAlvo = -1;
             int melhorDanoReal = -1;
@@ -116,7 +114,6 @@ public class JogoController {
                 double fator = calcularFatorElemento(melhorAtacante.getElemento(), melhorAlvo.getElemento());
                 int danoBase = (int)(melhorAtacante.getAtk() * fator);
 
-                // verifica se há cartas em defesa
                 boolean temDefensor = false;
                 CartaCriatura[] campoJog = jogo.getJogador(0).getCampo().getEspacosCriatura();
                 for (CartaCriatura c : campoJog) {
@@ -127,12 +124,10 @@ public class JogoController {
                 }
 
                 if (temDefensor) {
-                    // mostra ecrã de defesa
                     EcraDefesa ecraDefesa = new EcraDefesa(stage, this, melhorAtacante, danoBase);
                     ecraDefesa.mostrar();
                     return;
                 } else {
-                    // aplica dano diretamente
                     melhorAlvo.receberDano(danoBase);
                     if (!melhorAlvo.estaViva()) {
                         jogo.getJogador(0).getCampo().removerCriatura(indexMelhorAlvo);
@@ -142,7 +137,6 @@ public class JogoController {
             }
         }
 
-        // se não há ataque, continua normalmente
         jogo.verificarFimJogo();
         if (jogo.isJogoTerminado()) {
             terminarJogo();
